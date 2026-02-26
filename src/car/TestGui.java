@@ -1,4 +1,10 @@
 package car;
 
-public class TestGui {
+import java.util.TimerTask;
+
+public class TestGui extends TimerTask {
+    @Override
+    public void run() {
+
+    }
 }
