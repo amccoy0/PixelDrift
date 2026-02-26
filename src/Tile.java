@@ -2,9 +2,9 @@ import java.awt.Color;
 import java.util.Random;
 
 public class Tile {
-    private int XPos;
-    private int YPos;
-    private char tileType;
+    private final int XPos;
+    private final int YPos;
+    private final char tileType;
     private boolean slowTile;
     private boolean checkpoint;
     private Color tileColor;
@@ -64,5 +64,25 @@ public class Tile {
     // Getters may need to update getters based on later game logic
     public Color getTileColor() {
         return tileColor;
+    }
+
+    public int getXPos() {
+        return XPos;
+    }
+
+    public int getYPos() {
+        return YPos;
+    }
+
+    public char getTileType() {
+        return tileType;
+    }
+
+    public boolean isSlowTile() {
+        return slowTile;
+    }
+
+    public boolean isCheckpoint() {
+        return checkpoint;
     }
 }
