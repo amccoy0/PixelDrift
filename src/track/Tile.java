@@ -3,6 +3,13 @@ package track;
 import java.awt.Color;
 import java.util.Random;
 
+/**
+ * Tile.java
+ * Author: August McCoy
+ * Date: 2/25/26
+ * Code Description: This class represents a single Tile/Pixel of the track. It generates a variance of a base color for its specific tile type when
+ * generated.
+ */
 public class Tile {
     private final int XPos;
     private final int YPos;
@@ -29,20 +36,24 @@ public class Tile {
             case 'D':
                 // Saddle brown
                 baseColor = new Color(139, 69, 19);
+                break;
             // Checkpoint, Dirt Color
             case 'C':
                 // Saddle brown
                 baseColor = new Color(139, 69, 19);
                 this.checkpoint = true;
+                break;
             // Finish Line
             case 'F':
                 this.checkpoint = true;
                 baseColor = Color.WHITE;
+                break;
             // Default is grass
             default:
                 this.slowTile = true;
                 // Forest green
                 baseColor = new Color(34, 139, 34);
+                break;
         }
 
         // Convert Base Color to HSB
