@@ -16,6 +16,9 @@ public class Car {
     private String imgFileName;
     private BufferedImage img;
 
+    private boolean drift = false;
+
+
     public Car(double xPos, double yPos, String imgFileName){
         this.xPos = xPos;
         this.yPos = yPos;
@@ -95,4 +98,8 @@ public class Car {
     public double getAngle() {
         return angle;
     }
+
+    public void setDrift(boolean isDrift) { drift = isDrift;}
+
+    public boolean isDrift() {return drift;}
 }

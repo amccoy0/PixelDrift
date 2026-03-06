@@ -13,7 +13,7 @@ public class CarController extends TimerTask implements KeyListener {
     private final JFrame gameJFrame;
     private final Container contentPane;
 
-    private boolean up, down, left, right;
+    private boolean up, down, left, right, drift;
 
     private final Timer gameTimer = new Timer();
     private final Car car;
@@ -70,20 +70,22 @@ public class CarController extends TimerTask implements KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> up = true;
-            case KeyEvent.VK_DOWN -> down = true;
-            case KeyEvent.VK_LEFT -> left = true;
-            case KeyEvent.VK_RIGHT -> right = true;
+            case KeyEvent.VK_W -> up = true;
+            case KeyEvent.VK_S -> down = true;
+            case KeyEvent.VK_A -> left = true;
+            case KeyEvent.VK_D -> right = true;
+            case KeyEvent.VK_SPACE -> drift = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP -> up = false;
-            case KeyEvent.VK_DOWN -> down = false;
-            case KeyEvent.VK_LEFT -> left = false;
-            case KeyEvent.VK_RIGHT -> right = false;
+            case KeyEvent.VK_W -> up = false;
+            case KeyEvent.VK_S -> down = false;
+            case KeyEvent.VK_A -> left = false;
+            case KeyEvent.VK_D -> right = false;
+            case KeyEvent.VK_SPACE -> drift = false;
         }
     }
     @Override
