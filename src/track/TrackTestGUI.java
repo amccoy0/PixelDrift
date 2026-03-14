@@ -6,7 +6,6 @@ import java.awt.*;
 /**
  * TrackTextGUI.java
  * Author: August McCoy
- * Date: 3/4/26
  * Code Description: This purpose of this class was to test loading a Track visually and So I can play around with the
  * track design.
  */

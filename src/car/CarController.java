@@ -32,7 +32,7 @@ public class CarController extends TimerTask implements KeyListener {
 
         contentPane = gameJFrame.getContentPane();
         contentPane.setLayout(null);
-        contentPane.setBackground(Color.DARK_GRAY);
+
 
         // Create a car
         car = new Car(100, 100, "testCar.jpg");
