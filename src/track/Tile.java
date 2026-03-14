@@ -69,7 +69,7 @@ public class Tile {
         // Get baseColor from enum
         Color baseColor = surface.baseColor;
 
-
+        // I did this so I could have random variation in the tiles so they weren't one flat color
         // Convert Base Color to HSB
         float[] hsb = Color.RGBtoHSB(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), null);
 
@@ -109,7 +109,8 @@ public class Tile {
         return surface.checkpoint;
     }
 
-    public int getTileSize() {
+    // This method is static so I can access it without initializing a tile for GUI purposes
+    static int getTileSize() {
         return TILE_SIZE;
     }
 }
