@@ -11,51 +11,65 @@ import java.util.Random;
  * generated.
  */
 public class Tile {
-    private final int XPos;
-    private final int YPos;
-    private final char tileType;
-    private boolean slowTile;
-    private boolean checkpoint;
-    private Color tileColor;
     private static final Random rand = new Random();
+    private static final int TILE_SIZE = 8;
+
+    private final int xPos;
+    private final int yPos;
+    private final Surface surface;
+
+    private Color tileColor;
+
+    /**
+     * Enumeration to store surface data
+     */
+    public enum Surface {
+        DIRT('D', false, false, new Color(139, 69, 19)),
+        GRASS('G', true, false, new Color(34, 139, 34)),
+        FINISH('F',false, true, Color.WHITE),
+        CHECKPOINT('C', false, true, new Color(139, 69, 19));
+
+        public final char tileType;
+        public final boolean slow;
+        public final boolean checkpoint;
+        public final Color baseColor;
+
+        Surface(char tileType, boolean slow, boolean checkpoint, Color baseColor) {
+            this.tileType = tileType;
+            this.slow = slow;
+            this.checkpoint = checkpoint;
+            this.baseColor = baseColor;
+        }
+    }
+
 
     /**
      * Constructor, Track will read a double array and pass XPos, YPos, and tileType
      */
-    public Tile(int XPos, int YPos, char tileType) {
-        this.XPos = XPos;
-        this.YPos = YPos;
-        this.tileType = tileType;
-        this.slowTile = false;
+    public Tile(int xPos, int yPos, char tileType) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+
 
         // Placeholder for basic color
-        Color baseColor;
-        // Switch statement to set color and determine whether or not it is a slow tile
         switch (tileType) {
-            // Dirt
             case 'D':
-                // Saddle brown
-                baseColor = new Color(139, 69, 19);
+                surface = Surface.DIRT;
                 break;
-            // Checkpoint, Dirt Color
-            case 'C':
-                // Saddle brown
-                baseColor = new Color(139, 69, 19);
-                this.checkpoint = true;
-                break;
-            // Finish Line
             case 'F':
-                this.checkpoint = true;
-                baseColor = Color.WHITE;
+                surface = Surface.FINISH;
                 break;
-            // Default is grass
+            case 'C':
+                surface = Surface.CHECKPOINT;
+                break;
             default:
-                this.slowTile = true;
-                // Forest green
-                baseColor = new Color(34, 139, 34);
-                break;
+                surface = Surface.GRASS;
         }
 
+        // Get baseColor from enum
+        Color baseColor = surface.baseColor;
+
+        // I did this so I could have random variation in the tiles so they weren't one flat color
         // Convert Base Color to HSB
         float[] hsb = Color.RGBtoHSB(baseColor.getRed(), baseColor.getGreen(), baseColor.getBlue(), null);
 
@@ -80,22 +94,23 @@ public class Tile {
     }
 
     public int getXPos() {
-        return XPos;
+        return xPos;
     }
 
     public int getYPos() {
-        return YPos;
-    }
-
-    public char getTileType() {
-        return tileType;
+        return yPos;
     }
 
     public boolean isSlowTile() {
-        return slowTile;
+        return surface.slow;
     }
 
     public boolean isCheckpoint() {
-        return checkpoint;
+        return surface.checkpoint;
+    }
+
+    // This method is static so I can access it without initializing a tile for GUI purposes
+    static int getTileSize() {
+        return TILE_SIZE;
     }
 }

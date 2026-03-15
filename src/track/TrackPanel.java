@@ -12,8 +12,6 @@ import java.awt.*;
  */
 public class TrackPanel extends JPanel {
     private Track track;
-    private static final int TILE_SIZE = 8;
-
     public TrackPanel(Track track) {
         this.track = track;
     }
@@ -34,7 +32,7 @@ public class TrackPanel extends JPanel {
 
                 g.setColor(tileColor);
 
-                g.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                g.fillRect(c * Tile.getTileSize(), r * Tile.getTileSize(), Tile.getTileSize(), Tile.getTileSize());
             }
         }
     }
