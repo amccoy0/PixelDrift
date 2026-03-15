@@ -31,17 +31,18 @@ public class Car {
     // --------------------
 
     public void accelerate(double force) {
-        double xForce = Math.cos(angle) * force;
-        double yForce = Math.sin(angle) * force;
+        double xForce = Math.cos(angle) * force; // add force in the x direction
+        double yForce = Math.sin(angle) * force; // add force in the y direction
         velocity.add(xForce, yForce);
     }
 
     public void turn(double amount) {
-        angle += amount;
+        angle += amount; // change the angle, only for the image
     }
 
     public void move() {
 
+        // move based on the velocity vector
         xPos += velocity.getXComp();
         yPos += velocity.getYComp();
 

@@ -49,6 +49,7 @@ public class CarController extends TimerTask implements KeyListener {
     public void run() {
         if (!gameRunning) return;
 
+        car.setDrift(drift);
         if (up) car.accelerate(0.2);
         if (down) car.accelerate(-0.2);
         if (left) car.turn(-0.05);
@@ -75,6 +76,7 @@ public class CarController extends TimerTask implements KeyListener {
             case KeyEvent.VK_A -> left = true;
             case KeyEvent.VK_D -> right = true;
             case KeyEvent.VK_SPACE -> drift = true;
+
         }
     }
 
