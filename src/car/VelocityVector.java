@@ -111,4 +111,15 @@ public class VelocityVector {
             scale(max / mag);
         }
     }
+
+    /**
+     * Sets the x and y comps based on the angle
+     *
+     * @param angle
+     */
+    public void rotateTo(double angle){
+        double mag = getMagnitude();
+        xComp = mag * Math.cos(angle);
+        yComp = mag * Math.sin(angle);
+    }
 }

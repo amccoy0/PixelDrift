@@ -71,7 +71,14 @@ public class Car {
      * @param amount change in angle (radians)
      */
     public void turn(double amount) {
+
         angle += amount;
+
+        // here, if the car is not drifting we set the velocity vector to the angle,
+        // instead of letting it slowly change
+        if (!drift){
+            velocity.rotateTo(angle);
+        }
     }
 
     /**
