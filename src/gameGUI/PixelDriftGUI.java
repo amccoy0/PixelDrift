@@ -1,13 +1,8 @@
-/**
- * File name: CarController.java
- *
- * Description:
- * Controls the main game loop and user input for the car simulation.
- * This class manages keyboard controls, updates the car's movement,
- * and handles drawing the car on the screen.
- */
+package gameGUI;
 
-package car;
+import car.Car;
+import track.Track;
+import track.TrackPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,14 +10,21 @@ import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-public class CarController extends TimerTask implements KeyListener {
+/**
+ * PixelDriftGUI.java
+ * Author: August McCoy
+ * Code Descirption: This is the GUI class that will run the Pixel Drift Game
+ */
+public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListener {
 
     /** Time between game updates in milliseconds. */
     public static final int TIME_TO_UPDATE = 30;
 
     /** Main game window. */
     private final JFrame gameJFrame;
+
+    // Image for starting screen
+    private Image titleImage;
 
     /** Container used for drawing the game. */
     private final Container contentPane;
@@ -31,45 +33,40 @@ public class CarController extends TimerTask implements KeyListener {
     private boolean up, down, left, right, drift;
 
     /** Timer used to repeatedly update the game. */
-    private final Timer gameTimer = new Timer();
+    private final java.util.Timer gameTimer = new Timer();
 
     /** The car object being controlled in the game. */
     private final Car car;
 
+
+    // Practice track
+    private final Track track;
+    private final TrackPanel trackPanel;
+
+
     /** Indicates whether the game is currently running. */
-    private boolean gameRunning = false;
-
-
-    /**
-     * Entry point of the program. Creates the game controller
-     * and starts the game window.
-     *
-     * @param args command line arguments (unused)
-     */
-    public static void main(String[] args) {
-        new CarController("Pixel Drift", 50, 50, 800, 600);
-    }
+    private boolean gameRunning = true;
 
     /**
-     * Constructs the game window and initializes the car and game loop.
-     *
-     * @param title window title
-     * @param x window x-position on screen
-     * @param y window y-position on screen
-     * @param width window width
-     * @param height window height
+     * Constructor
      */
-    public CarController(String title, int x, int y, int width, int height) {
-        gameJFrame = new JFrame(title);
-        gameJFrame.setSize(width, height);
-        gameJFrame.setLocation(x, y);
+    public PixelDriftGUI () {
+        gameJFrame = new JFrame("Pixel Drift");
         gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         contentPane = gameJFrame.getContentPane();
-        contentPane.setLayout(null);
 
-        // Create a car
+        // Set up trackPanel
+        track = new Track("src/data/track120x100.txt");
+        trackPanel = new TrackPanel(track, 1);
+        gameJFrame.add(trackPanel);
+
+        // Create a car and add it to trackPanel
         car = new Car(100, 100, "testCar.jpg");
+        trackPanel.setCar(car);
+
+        gameJFrame.pack();
+        gameJFrame.setLocationRelativeTo(null);
 
         gameJFrame.addKeyListener(this);
         gameJFrame.setVisible(true);
@@ -77,6 +74,29 @@ public class CarController extends TimerTask implements KeyListener {
         // Schedule repeated updates
         gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
     }
+
+    public static void main(String[] args) {
+        new PixelDriftGUI();
+    }
+
+    private void singlePlayer() {
+
+    }
+    /* This method when implemented will load the starting screen, focusing on getting car + track first
+    private void startingScreen() {
+        titleImage = new ImageIcon("src/data/PixelDrift_Startup.png").getImage();
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                gameRunning = true;
+                repaint();
+            }
+        });
+
+    }
+
+     */
 
     /**
      * Called repeatedly by the Timer to update the game state.
@@ -94,18 +114,7 @@ public class CarController extends TimerTask implements KeyListener {
         if (right) car.turn(0.05);
 
         car.move();
-        repaint();
-    }
-
-    /**
-     * Clears the screen and redraws the car.
-     */
-    private void repaint() {
-        Graphics g = contentPane.getGraphics();
-        if (g != null) {
-            g.clearRect(0, 0, contentPane.getWidth(), contentPane.getHeight());
-            car.draw(g);
-        }
+        trackPanel.repaint();
     }
 
     // --------------------
@@ -146,10 +155,35 @@ public class CarController extends TimerTask implements KeyListener {
 
     /**
      * Required method from KeyListener.
-     * Not used in this implementation.
+     * Not used in this implementation yet but will be used in starting screen
      *
      * @param e key event
      */
     @Override
     public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }
