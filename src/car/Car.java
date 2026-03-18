@@ -9,6 +9,8 @@
 
 package car;
 
+import track.Tile;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -34,6 +36,14 @@ public class Car {
 
     /** Indicates whether the car is drifting. */
     private boolean drift = false;
+
+    // Added to keep track of car positioning on track, used by later game logic will
+    private int lap;
+    private int checkPointCount;
+    // Used to make sure we don't increment Finish, might need to be a data structure where we just look at the last amount
+    // of Tiles
+    private Tile lastTile;
+
 
     /**
      * Constructs a Car object at the specified position.
@@ -183,5 +193,38 @@ public class Car {
      */
     public boolean isDrift() {
         return drift;
+    }
+
+    // Getters/Setters for lap + lastTile + checkPointCount
+    public void setLap(int lap) {
+        this.lap = lap;
+    }
+
+    public int getLap () {
+        return lap;
+    }
+
+    public void incrementLap () {
+        lap += 1;
+    }
+
+    public int getCheckPointCount() {
+        return checkPointCount;
+    }
+
+    public void incrementCheckpointCount() {
+        checkPointCount += 1;
+    }
+
+    public void resetCheckpointCount() {
+        checkPointCount = 0;
+    }
+
+    public void setLastTile(Tile tile) {
+        lastTile = tile;
+    }
+
+    public Tile getLastTile() {
+        return lastTile;
     }
 }

@@ -6,7 +6,6 @@ import java.util.Random;
 /**
  * Tile.java
  * Author: August McCoy
- * Date: 2/25/26
  * Code Description: This class represents a single Tile/Pixel of the track. It generates a variance of a base color for its specific tile type when
  * generated.
  */

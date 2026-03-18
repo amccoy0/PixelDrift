@@ -15,13 +15,17 @@ public class TrackTestGUI {
         Track track = new Track("src/data/track120x100.txt");
         JFrame frame = new JFrame("Track draw test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(track.getCols() * Tile.getTileSize(), track.getRows() * Tile.getTileSize());
 
 
-        TrackPanel trackPanel = new TrackPanel(track);
 
+        TrackPanel trackPanel = new TrackPanel(track, 1);
         frame.add(trackPanel);
+
+        frame.pack();
+        frame.setLocationRelativeTo(null);
 
         frame.setVisible(true);
     }
+
+
 }

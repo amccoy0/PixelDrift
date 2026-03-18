@@ -6,7 +6,6 @@ import java.io.*;
 /**
  * Track.java
  * Author: August McCoy
- * Date: 3/2/2026
  * Code Description: This class represents a Track in Java. It is a double array of Tile objects that represent the track. Has functions to help
  * game logic and the drawing of the track.
  */
@@ -21,15 +20,6 @@ public class Track {
      * @param filename takes file path to the file
      */
     public Track (String filename) {
-        loadTrack(filename);
-    }
-
-    /**
-     * This function reads a file and generates the track based on the contents of the tile.
-     *
-     * @param filename the filepath of the file
-     */
-    private void loadTrack(String filename) {
         int lineCount = 0;
         try (final FileReader fileReader = new FileReader(new File(filename));
              final BufferedReader buffReader = new BufferedReader(fileReader)) {
@@ -63,7 +53,7 @@ public class Track {
                     }
                     // Increment lineCount at end
                     lineCount++;
-                // UPDATE THIS
+                    // UPDATE THIS
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -78,6 +68,7 @@ public class Track {
             System.err.println("Ignoring rest of file");
         }
     }
+
 
     /**
      * This function helps draw the track
@@ -94,12 +85,12 @@ public class Track {
     /**
      * This function may not be used but might later, returns a specific tile
      *
-     * @param row x position of the tile
-     * @param col y position of the tile
+     * @param xPos x position of the tile
+     * @param yPos y position of the tile
      * @return a Tile in the track
      */
-    public Tile getCurrentTile(int row, int col) {
-        return track[row][col];
+    public Tile getCurrentTile(int xPos, int yPos) {
+        return track[xPos / Tile.getTileSize()][yPos / Tile.getTileSize()];
     }
 
     /**
