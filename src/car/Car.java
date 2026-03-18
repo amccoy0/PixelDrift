@@ -20,6 +20,8 @@ public class Car {
     private double xPos;
     private double yPos;
 
+    private double frictionScalar = 0.97;
+
     /** Direction the car is facing (in radians). */
     private double angle = 0;
 
@@ -92,7 +94,7 @@ public class Car {
         yPos += velocity.getYComp();
 
         // friction
-        velocity.scale(0.97);
+        scaleFriction(frictionScalar);
 
         // max speed
         velocity.limit(6);
@@ -149,14 +151,7 @@ public class Car {
     // Getters
     // --------------------
 
-    /**
-     * Returns the car's velocity vector.
-     *
-     * @return velocity vector
-     */
-    public VelocityVector getVelocity() {
-        return velocity;
-    }
+
 
     /**
      * Returns the car's current orientation angle.
@@ -184,4 +179,18 @@ public class Car {
     public boolean isDrift() {
         return drift;
     }
+
+    /**
+     * Scales friction
+     * @param amount
+     */
+    public void scaleFriction(double amount){
+        velocity.scale(amount);
+    }
+
+    /**
+     * Changes the friction
+     * @param amount
+     */
+    public void setFriction(double amount) {frictionScalar = amount;}
 }
