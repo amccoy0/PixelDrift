@@ -1,6 +1,7 @@
 package gameGUI;
 
 import car.Car;
+import track.Tile;
 import track.Track;
 import track.TrackPanel;
 
@@ -38,14 +39,21 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** The car object being controlled in the game. */
     private final Car car;
 
+    /** Track the car's location */
+    private int[] carPos;
+    private Tile carTile;
+    private Tile.Surface carSurface;
+
 
     // Practice track
     private final Track track;
     private final TrackPanel trackPanel;
 
 
+
     /** Indicates whether the game is currently running. */
     private boolean gameRunning = true;
+
 
     /**
      * Constructor
@@ -64,6 +72,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         // Create a car and add it to trackPanel
         car = new Car(100, 100, "testCar.jpg");
         trackPanel.setCar(car);
+        car.setLastTile(carPosToTile(car.getPos()));
 
         gameJFrame.pack();
         gameJFrame.setLocationRelativeTo(null);
@@ -106,6 +115,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     public void run() {
         if (!gameRunning) return;
 
+        carPos = car.getPos();
+        carTile = carPosToTile(carPos);
+        carSurface = carTile.getSurface();
+
+        car.setGrip(carSurface.grip);
+        car.setAccelerationMultiplier(carSurface.accelMultiplier);
+        car.setMaxSpeed(carSurface.maxSpeed);
         car.setDrift(drift);
 
         if (up) car.accelerate(0.2);
@@ -135,6 +151,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_D -> right = true;
             case KeyEvent.VK_SPACE -> drift = true;
         }
+    }
+
+    private Tile carPosToTile(int[] carPos){
+        return track.getCurrentTile(carPos[0],carPos[1]);
     }
 
     /**

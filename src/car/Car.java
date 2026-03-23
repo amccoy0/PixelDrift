@@ -10,7 +10,6 @@
 package car;
 
 import track.Tile;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -22,10 +21,13 @@ public class Car {
     private double xPos;
     private double yPos;
 
-    private double frictionScalar = 0.97;
 
     /** Direction the car is facing (in radians). */
     private double angle = 0;
+    private double grip;
+    private double accelerationMultiplier;
+    private double dragConstant = 0.98;
+    private double maxSpeed = 6.0;
 
     /** Vector representing the car's velocity. */
     private VelocityVector velocity;
@@ -72,6 +74,7 @@ public class Car {
      * @param force amount of acceleration applied to the velocity vector
      */
     public void accelerate(double force) {
+        force *= accelerationMultiplier;
         double xForce = Math.cos(angle) * force;
         double yForce = Math.sin(angle) * force;
         velocity.add(xForce, yForce);
@@ -83,13 +86,12 @@ public class Car {
      * @param amount change in angle (radians)
      */
     public void turn(double amount) {
-
         angle += amount;
 
         // here, if the car is not drifting we set the velocity vector to the angle,
         // instead of letting it slowly change
         if (!drift){
-            velocity.rotateTo(angle);
+            velocity.rotateTo(angle*grip);
         }
     }
 
@@ -103,11 +105,12 @@ public class Car {
         xPos += velocity.getXComp();
         yPos += velocity.getYComp();
 
-        // friction
-        scaleFriction(frictionScalar);
+        // drag
+        drag();
 
         // max speed
-        velocity.limit(6);
+        velocity.limit(maxSpeed);
+
     }
 
     // --------------------
@@ -153,15 +156,11 @@ public class Car {
             g2.fillRect((int)xPos, (int)yPos, width, height);
         else
             g2.drawImage(img, (int)xPos, (int)yPos, null);
-
-        g2.rotate(-angle, centerX, centerY);
     }
 
     // --------------------
     // Getters
     // --------------------
-
-
 
     /**
      * Returns the car's current orientation angle.
@@ -193,17 +192,11 @@ public class Car {
 
     /**
      * Scales friction
-     * @param amount
      */
-    public void scaleFriction(double amount){
-        velocity.scale(amount);
+    private void drag(){
+        velocity.scale(dragConstant);
     }
 
-    /**
-     * Changes the friction
-     * @param amount
-     */
-    public void setFriction(double amount) {frictionScalar = amount;}
 
     // Getters/Setters for lap + lastTile + checkPointCount
     public void setLap(int lap) {
@@ -237,5 +230,15 @@ public class Car {
     public Tile getLastTile() {
         return lastTile;
     }
+
+    public int[] getPos(){
+        return new int[]{(int)xPos,(int)yPos};
+    }
+
+    public void setGrip(double amount){ grip = amount;}
+
+    public void setAccelerationMultiplier(double amount){ accelerationMultiplier = amount;}
+
+    public void setMaxSpeed(double amount){ maxSpeed = amount;}
 
 }

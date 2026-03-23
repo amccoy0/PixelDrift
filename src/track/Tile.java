@@ -23,19 +23,23 @@ public class Tile {
      * Enumeration to store surface data
      */
     public enum Surface {
-        DIRT('D', false, false, new Color(139, 69, 19)),
-        GRASS('G', true, false, new Color(34, 139, 34)),
-        FINISH('F',false, true, Color.WHITE),
-        CHECKPOINT('C', false, true, new Color(139, 69, 19));
+        DIRT('D', 0.97, 0.8, 6.0, false, new Color(139, 69, 19)),
+        GRASS('G', 0.93, 0.75, 3.5, false, new Color(34, 139, 34)),
+        FINISH('F',0.97, 0.8, 6.0, true, Color.WHITE),
+        CHECKPOINT('C', 0.97, 0.8, 6.0, true, Color.BLUE);
 
         public final char tileType;
-        public final boolean slow;
+        public final double grip;
+        public final double accelMultiplier;
+        public final double maxSpeed;
         public final boolean checkpoint;
         public final Color baseColor;
 
-        Surface(char tileType, boolean slow, boolean checkpoint, Color baseColor) {
+        Surface(char tileType, double grip, double accelMultiplier, double maxSpeed, boolean checkpoint, Color baseColor) {
             this.tileType = tileType;
-            this.slow = slow;
+            this.grip = grip;
+            this.accelMultiplier = accelMultiplier;
+            this.maxSpeed = maxSpeed;
             this.checkpoint = checkpoint;
             this.baseColor = baseColor;
         }
@@ -100,8 +104,8 @@ public class Tile {
         return yPos;
     }
 
-    public boolean isSlowTile() {
-        return surface.slow;
+    public Surface getSurface() {
+        return surface;
     }
 
     public boolean isCheckpoint() {
