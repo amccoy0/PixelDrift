@@ -5,17 +5,20 @@ import track.Track;
 import track.TrackPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 
 /**
  * PixelDriftGUI.java
  * Author: August McCoy
  * Code Descirption: This is the GUI class that will run the Pixel Drift Game
  */
-public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListener {
+public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListener, ActionListener, ItemListener {
 
     /** Time between game updates in milliseconds. */
     public static final int TIME_TO_UPDATE = 30;
@@ -23,8 +26,36 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Main game window. */
     private final JFrame gameJFrame;
 
-    // Image for starting screen
-    private Image titleImage;
+    /** JRadio Buttons for track difficulty and gamemode */
+    private JRadioButton[] trackDifficulty;
+    private JRadioButton[] gamemodeSelection;
+    private JRadioButton timeTrialButton;
+    private JRadioButton twoPlayerButton;
+    private JRadioButton currentTrackButton;
+    private JRadioButton currentGamemodeButton;
+    private JRadioButton easyTrackButton;
+    private JRadioButton mediumTrackButton;
+    private JRadioButton hardTrackButton;
+
+    /** Button Groups for JRadioButtons */
+    private ButtonGroup trackButtonGroup;
+    private ButtonGroup gamemodeButtonGroup;
+
+    /** Current Selected JRadioButtons for respective groups */
+    private JRadioButton gamemodeSelectedButton;
+    private JRadioButton trackSelectedButton;
+
+
+    /** Panels for JRadioButtons */
+    private JPanel gamemodeButtonPanel;
+    private JPanel trackButtonPanel;
+
+    /** Play Button */
+    private JButton playButton;
+
+    /** Image for starting screen */
+    private ImageIcon titleImage;
+    private JLabel imageLabel;
 
     /** Container used for drawing the game. */
     private final Container contentPane;
@@ -35,13 +66,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Timer used to repeatedly update the game. */
     private final java.util.Timer gameTimer = new Timer();
 
-    /** The car object being controlled in the game. */
-    private final Car car;
+    /** The car objects being controlled in the game. */
+    private Car[] cars;
 
 
-    // Practice track
-    private final Track track;
-    private final TrackPanel trackPanel;
+    /** Used to store track data */
+    private Track track;
+    private TrackPanel trackPanel;
 
 
     /** Indicates whether the game is currently running. */
@@ -56,47 +87,154 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         contentPane = gameJFrame.getContentPane();
 
-        // Set up trackPanel
-        track = new Track("src/data/track120x100.txt");
-        trackPanel = new TrackPanel(track, 1);
-        gameJFrame.add(trackPanel);
+        // Set contentPane layout
+        contentPane.setLayout(new BorderLayout());
 
-        // Create a car and add it to trackPanel
-        car = new Car(100, 100, "testCar.jpg");
-        trackPanel.setCar(car);
-
-        gameJFrame.pack();
-        gameJFrame.setLocationRelativeTo(null);
 
         gameJFrame.addKeyListener(this);
         gameJFrame.setVisible(true);
-
-        // Schedule repeated updates
-        gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+        startingScreen();
     }
 
     public static void main(String[] args) {
         new PixelDriftGUI();
     }
 
-    private void singlePlayer() {
 
-    }
-    /* This method when implemented will load the starting screen, focusing on getting car + track first
+
+
+    /**
+     * This method loads an image to represent the starting screen of the game. It has a mouse listener for a mouse click
+     * to see if the user is ready to play and then the loads the menu
+     */
     private void startingScreen() {
-        titleImage = new ImageIcon("src/data/PixelDrift_Startup.png").getImage();
+        // Get starting image and add to contentPane
+        titleImage = new ImageIcon("src/data/PixelDrift_Startup.png");
+        imageLabel = new JLabel(titleImage);
+        contentPane.add(imageLabel);
 
-        addMouseListener(new MouseAdapter() {
+        gameJFrame.pack();
+        imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                gameRunning = true;
-                repaint();
+                // Remove all components, revalidate and repaint to update the display
+                contentPane.removeAll();
+                contentPane.revalidate();
+                contentPane.repaint();
+                // call method to load the menu screen
+                menuScreen();
             }
         });
 
     }
 
+    /**
+     * This method will load a menu in the GUI that allows the user to select gamemode, and track difficulty.
      */
+    private void menuScreen() {
+        // Set up JRadioButtons for gamemode selection
+        gamemodeSelection = new JRadioButton[2]; // Change this if more gamemodes
+        timeTrialButton = new JRadioButton("Time Trial");
+        twoPlayerButton = new JRadioButton("Two Players");
+
+        gamemodeSelection[0] = timeTrialButton;
+        gamemodeSelection[1] = twoPlayerButton;
+
+        timeTrialButton.setSelected(true);
+
+        timeTrialButton.addItemListener(this);
+        twoPlayerButton.addItemListener(this);
+
+
+        // Add track buttons to respective button group, set easy track to selected
+        gamemodeButtonGroup = new ButtonGroup();
+        currentGamemodeButton = gamemodeSelection[0];
+
+        // Initialize gamemode panel
+        gamemodeButtonPanel = new JPanel(new GridLayout(2, 1, 0, 5));
+
+        for (JRadioButton button: gamemodeSelection) {
+            gamemodeButtonGroup.add(button);
+        }
+
+        // Add track buttons to respected panel
+        for (JRadioButton button: gamemodeSelection) {
+            gamemodeButtonPanel.add(button);
+        }
+
+        // Set up JRadioButtons for track selection
+        trackDifficulty = new JRadioButton[3]; // Change this if more tracks
+        easyTrackButton = new JRadioButton("Beginner Track");
+        hardTrackButton = new JRadioButton("Professional Track");
+        mediumTrackButton = new JRadioButton("Intermediate Track");
+
+        trackDifficulty[0] = easyTrackButton;
+        trackDifficulty[1] = mediumTrackButton;
+        trackDifficulty[2] = hardTrackButton;
+
+        easyTrackButton.setSelected(true);
+
+        easyTrackButton.addItemListener(this);
+        mediumTrackButton.addItemListener(this);
+        hardTrackButton.addItemListener(this);
+
+        // Add gamemode buttons to respective button group, set timetrial to selected
+        trackButtonGroup = new ButtonGroup();
+        currentTrackButton = trackDifficulty[0];
+
+        // Initialize track panel
+        trackButtonPanel = new JPanel(new GridLayout(3, 1, 0, 5));
+
+        for (JRadioButton button: trackDifficulty) {
+            trackButtonGroup.add(button);
+        }
+
+        // Add gamemode buttons to respected panel
+        for (JRadioButton button: trackDifficulty) {
+            trackButtonPanel.add(button);
+        }
+
+        // Play button
+        playButton = new JButton("Play");
+        playButton.addActionListener(this);
+
+        // Resize JFrame
+        gameJFrame.setTitle("Pixel Drift Menu");
+        gameJFrame.setSize(400, 300);
+
+        // Set background to break-up panels
+        gamemodeButtonPanel.setBackground(Color.LIGHT_GRAY);
+        trackButtonPanel.setBackground(Color.LIGHT_GRAY);
+
+        // Add panels to contentPane
+        contentPane.add(gamemodeButtonPanel, BorderLayout.NORTH);
+        contentPane.add(trackButtonPanel, BorderLayout.CENTER);
+        contentPane.add(playButton, BorderLayout.SOUTH);
+
+
+        gameJFrame.setVisible(true);
+
+        // load track here and set cars to track panel and then load
+
+
+    }
+
+    /**
+     * This method will handle single player time trial logic
+     */
+    private void timeTrial() {
+        gameRunning = true;
+        // Schedule repeated updates
+        gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+    }
+
+    /**
+     * This method will handle 2 player game logic
+     */
+    private void twoPlayer() {
+        gameRunning = true;
+    }
+
 
     /**
      * Called repeatedly by the Timer to update the game state.
@@ -105,15 +243,16 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void run() {
         if (!gameRunning) return;
+        for (Car car: cars) {
+            car.setDrift(drift);
 
-        car.setDrift(drift);
+            if (up) car.accelerate(0.2);
+            if (down) car.accelerate(-0.2);
+            if (left) car.turn(-0.05);
+            if (right) car.turn(0.05);
 
-        if (up) car.accelerate(0.2);
-        if (down) car.accelerate(-0.2);
-        if (left) car.turn(-0.05);
-        if (right) car.turn(0.05);
-
-        car.move();
+            car.move();
+        }
         trackPanel.repaint();
     }
 
@@ -185,5 +324,92 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    /**
+     * This method is only called when a JRadioButton is selected. It reassigns the respective selected button for each
+     * group of buttons.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        // Check if one of the buttons is selected
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            // Check if source is track or gamemode
+            for (JRadioButton gamemodeButton: gamemodeSelection) {
+                if ((JRadioButton)e.getSource() == gamemodeButton) {
+                    gamemodeSelectedButton = (JRadioButton) gamemodeButton;
+                }
+            }
+
+            for (JRadioButton trackButton: trackDifficulty) {
+                if ((JRadioButton)e.getSource() == trackButton) {
+                    trackSelectedButton = (JRadioButton) trackButton;
+                }
+            }
+        }
+    }
+
+    /**
+     * This method is used to load the gamemode and the track selection, only used when playButton is clicked
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == playButton) {
+            // Remove all components, revalidate and repaint to update the display
+            contentPane.removeAll();
+            contentPane.revalidate();
+            contentPane.repaint();
+
+            // Initialize tracks
+            if (trackSelectedButton == easyTrackButton) {
+                // Easy track
+                track = new Track("src/data/track120x100.txt");
+            } else if (trackSelectedButton == mediumTrackButton) {
+                // Add medium track when I get it
+            } else {
+                // Hard track add when I draw it
+            }
+
+            // game mode
+            if (gamemodeSelectedButton == timeTrialButton) {
+                // Create trackPanel and add cars
+                trackPanel = new TrackPanel(track, 1);
+                cars = new Car[1];
+                cars[0] = new Car(100, 100, "testCar.jpg");
+                trackPanel.setCar(cars[0]);
+
+                // Add trackPanel to gameJFrame
+                contentPane.add(trackPanel, BorderLayout.CENTER);
+                gameJFrame.pack();
+                contentPane.revalidate();
+                trackPanel.repaint();
+
+
+                // Run time trial game logic
+                timeTrial();
+            } else if (gamemodeSelectedButton == twoPlayerButton) {
+                // Create trackPanel and add cars
+                trackPanel = new TrackPanel(track, 2);
+                cars = new Car[2];
+                cars[0] = new Car(100, 100, "testCar.jpg");
+                cars[1] = new Car(50, 100, "testCar.jpg");
+                trackPanel.setCar(cars[0]);
+                trackPanel.setCar(cars[1]);
+
+                // Add trackPanel to gameJFrame
+                contentPane.add(trackPanel, BorderLayout.CENTER);
+                gameJFrame.pack();
+                contentPane.revalidate();
+                trackPanel.repaint();
+
+
+                // Run two player game logic
+                twoPlayer();
+            }
+        }
     }
 }

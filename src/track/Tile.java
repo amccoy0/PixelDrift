@@ -26,9 +26,12 @@ public class Tile {
         DIRT('D', false, false, new Color(139, 69, 19)),
         GRASS('G', true, false, new Color(34, 139, 34)),
         FINISH('F',false, true, Color.WHITE),
-        CHECKPOINT('C', false, true, new Color(139, 69, 19));
+        CHECKPOINT('C', false, true, new Color(139, 69, 19)),
+        SAND('S', true, false, Color.YELLOW);
+
 
         public final char tileType;
+        // Change this to a friction scaler .9 sand .7 grass
         public final boolean slow;
         public final boolean checkpoint;
         public final Color baseColor;
