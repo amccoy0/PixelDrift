@@ -5,13 +5,12 @@ import track.Track;
 import track.TrackPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 
 /**
  * PixelDriftGUI.java
@@ -41,9 +40,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private ButtonGroup trackButtonGroup;
     private ButtonGroup gamemodeButtonGroup;
 
-    /** Current Selected JRadioButtons for respective groups */
-    private JRadioButton gamemodeSelectedButton;
-    private JRadioButton trackSelectedButton;
 
 
     /** Panels for JRadioButtons */
@@ -224,6 +220,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      */
     private void timeTrial() {
         gameRunning = true;
+        gameJFrame.requestFocusInWindow();
         // Schedule repeated updates
         gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
     }
@@ -233,6 +230,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      */
     private void twoPlayer() {
         gameRunning = true;
+        gameJFrame.requestFocusInWindow();
+        // Schedule repeated updates
+        gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
     }
 
 
@@ -339,13 +339,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             // Check if source is track or gamemode
             for (JRadioButton gamemodeButton: gamemodeSelection) {
                 if ((JRadioButton)e.getSource() == gamemodeButton) {
-                    gamemodeSelectedButton = (JRadioButton) gamemodeButton;
+                    currentGamemodeButton = (JRadioButton) gamemodeButton;
                 }
             }
 
             for (JRadioButton trackButton: trackDifficulty) {
                 if ((JRadioButton)e.getSource() == trackButton) {
-                    trackSelectedButton = (JRadioButton) trackButton;
+                    currentTrackButton = (JRadioButton) trackButton;
                 }
             }
         }
@@ -365,35 +365,39 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             contentPane.repaint();
 
             // Initialize tracks
-            if (trackSelectedButton == easyTrackButton) {
+            if (currentTrackButton == easyTrackButton) {
                 // Easy track
                 track = new Track("src/data/track120x100.txt");
-            } else if (trackSelectedButton == mediumTrackButton) {
+            } else if (currentTrackButton == mediumTrackButton) {
                 // Add medium track when I get it
             } else {
                 // Hard track add when I draw it
             }
 
             // game mode
-            if (gamemodeSelectedButton == timeTrialButton) {
+            if (currentGamemodeButton == timeTrialButton) {
                 // Create trackPanel and add cars
                 trackPanel = new TrackPanel(track, 1);
+                trackPanel.setFocusable(true);
                 cars = new Car[1];
                 cars[0] = new Car(100, 100, "testCar.jpg");
                 trackPanel.setCar(cars[0]);
 
                 // Add trackPanel to gameJFrame
-                contentPane.add(trackPanel, BorderLayout.CENTER);
+                gameJFrame.add(trackPanel);
                 gameJFrame.pack();
-                contentPane.revalidate();
+                gameJFrame.revalidate();
                 trackPanel.repaint();
+
+                gameJFrame.setVisible(true);
 
 
                 // Run time trial game logic
                 timeTrial();
-            } else if (gamemodeSelectedButton == twoPlayerButton) {
+            } else if (currentGamemodeButton == twoPlayerButton) {
                 // Create trackPanel and add cars
                 trackPanel = new TrackPanel(track, 2);
+                trackPanel.setFocusable(true);
                 cars = new Car[2];
                 cars[0] = new Car(100, 100, "testCar.jpg");
                 cars[1] = new Car(50, 100, "testCar.jpg");
@@ -401,10 +405,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel.setCar(cars[1]);
 
                 // Add trackPanel to gameJFrame
-                contentPane.add(trackPanel, BorderLayout.CENTER);
+                gameJFrame.add(trackPanel);
                 gameJFrame.pack();
-                contentPane.revalidate();
+                gameJFrame.revalidate();
                 trackPanel.repaint();
+
+                gameJFrame.setVisible(true);
 
 
                 // Run two player game logic
