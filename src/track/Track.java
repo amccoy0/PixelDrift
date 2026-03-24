@@ -90,7 +90,7 @@ public class Track {
      * @return a Tile in the track
      */
     public Tile getCurrentTile(int xPos, int yPos) {
-        return track[xPos / Tile.getTileSize()][yPos / Tile.getTileSize()];
+        return track[yPos / Tile.getTileSize()][xPos / Tile.getTileSize()];
     }
 
     /**
@@ -100,9 +100,10 @@ public class Track {
      * @param col the y position of the tile
      * @return true if the tile is a slow tile, false otherwise
      */
-    public boolean isSlowTime(int xPos, int yPos) {
-        return track[xPos / Tile.getTileSize()][yPos / Tile.getTileSize()].isSlowTile();
-    }
+//    public boolean isSlowTime(int row, int col) {
+//        return track[row][col].isSlowTile();
+//    }
+
 
     // Getters, might remove later, don't know if they will be used yet
     public Tile[][] getTrack() {

@@ -1,6 +1,7 @@
 package gameGUI;
 
 import car.Car;
+import track.Tile;
 import track.Track;
 import track.TrackPanel;
 
@@ -65,14 +66,21 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** The car objects being controlled in the game. */
     private Car[] cars;
 
+    /** Track the car's location */
+    private int[] carPos;
+    private Tile carTile;
+    private Tile.Surface carSurface;
+
 
     /** Used to store track data */
     private Track track;
     private TrackPanel trackPanel;
 
 
+
     /** Indicates whether the game is currently running. */
     private boolean gameRunning = true;
+
 
     /**
      * Constructor
@@ -85,6 +93,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         // Set contentPane layout
         contentPane.setLayout(new BorderLayout());
+
+        // I don't know where this will go
+        //car.setLastTile(carPosToTile(car.getPos()));
 
 
         gameJFrame.addKeyListener(this);
@@ -245,11 +256,20 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (!gameRunning) return;
         for (Car car: cars) {
             car.setDrift(drift);
-
             if (up) car.accelerate(0.2);
             if (down) car.accelerate(-0.2);
             if (left) car.turn(-0.05);
             if (right) car.turn(0.05);
+
+            carPos = car.getPos();
+            carTile = carPosToTile(carPos);
+            carSurface = carTile.getSurface();
+
+            car.setGrip(carSurface.grip);
+            car.setAccelerationMultiplier(carSurface.accelMultiplier);
+            car.setMaxSpeed(carSurface.maxSpeed);
+            car.setDrift(drift);
+
 
             car.move();
         }
@@ -274,6 +294,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_D -> right = true;
             case KeyEvent.VK_SPACE -> drift = true;
         }
+    }
+
+    private Tile carPosToTile(int[] carPos){
+        return track.getCurrentTile(carPos[0],carPos[1]);
     }
 
     /**
