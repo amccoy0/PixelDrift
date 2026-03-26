@@ -239,9 +239,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * This method will handle single player time trial set up
+     * This method will handle single player time trial logic, called by gameTimer
      */
     private void timeTrial(Tile.Surface surface) {
+        // Update title with timer here
+
         // Check if current surface is checkpoint and the tick for checkpoint cooldown is over
         if (surface == Tile.Surface.CHECKPOINT && cars[0].getCheckpointCooldown()) {
             // Incremement checkpoint count and start checkpoint cooldown
@@ -280,6 +282,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     }
 
+    /**
+     * Sets up time trial, called whenever menu chooses time trial or when the user wants to play agin after finishing
+     * a time trial race.
+     */
     private void restartTimeTrial() {
         // Create trackPanel and add cars
         trackPanel = new TrackPanel(track, 1);
@@ -314,7 +320,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * Creates a swing timer that lasts 3 seconds that then allows key inputs
+     * Creates a swing timer that lasts 3 seconds that then allows key inputs, used at start of race
      */
     private void startCountdown() {
         startGame = false;
@@ -323,12 +329,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         timer.addActionListener(e -> {
             if (countdown[0] > 0) {
                 gameJFrame.setTitle(String.valueOf(countdown[0]));
+                // Decrease countdown
                 countdown[0]--;
             } else {
+                // Stop timer and start game
                 ((javax.swing.Timer)e.getSource()).stop();
                 gameRunning = true;
-
-
                 gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
 
             }
