@@ -23,6 +23,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Time between game updates in milliseconds. */
     public static final int TIME_TO_UPDATE = 30;
 
+    /** Countdown time for the race to start */
+    private static final int COUNTDOWN = 3;
+
+    /** Number of laps required to finish */
+    private static final int MAX_LAPS = 1;
+
     /** Main game window. */
     private final JFrame gameJFrame;
 
@@ -76,10 +82,15 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private Track track;
     private TrackPanel trackPanel;
 
-
-
     /** Indicates whether the game is currently running. */
-    private boolean gameRunning = true;
+    private boolean gameRunning;
+
+    /** Used for countdown timer */
+    private boolean startGame;
+
+
+
+
 
 
     /**
@@ -96,7 +107,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         // I don't know where this will go
         //car.setLastTile(carPosToTile(car.getPos()));
-
+        gameRunning = false;
+        startGame = false;
 
         gameJFrame.addKeyListener(this);
         gameJFrame.setVisible(true);
@@ -227,13 +239,68 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * This method will handle single player time trial logic
+     * This method will handle single player time trial set up
      */
-    private void timeTrial() {
-        gameRunning = true;
-        gameJFrame.requestFocusInWindow();
-        // Schedule repeated updates
-        gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+    private void timeTrial(Tile.Surface surface) {
+        // Check if current surface is checkpoint and the tick for checkpoint cooldown is over
+        if (surface == Tile.Surface.CHECKPOINT && cars[0].getCheckpointCooldown()) {
+            // Incremement checkpoint count and start checkpoint cooldown
+            cars[0].incrementCheckpointCount();
+            //cars[0].setCheckpointCooldown(false);
+        // Check if current tile is finish
+        }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
+            cars[0].incrementLap();
+            // Check if car has reached max lap count and stop game
+            if (cars[0].getLap() == MAX_LAPS) {
+                // Stop timer and game
+
+                gameRunning = false;
+                // Display in message and ask if they want to go to the menu or play again
+                JOptionPane.showMessageDialog(null, "You finished the track in: ");
+                int selection = JOptionPane.showConfirmDialog(null,"Choose one",
+                        "Would you like to play again?", JOptionPane.YES_NO_OPTION);
+                // Return to menu or call play again
+                if (selection == JOptionPane.YES_OPTION) {
+                    // Restart game
+                    restartTimeTrial();
+                } else {
+                    // Go to menu
+                    gameRunning = false;
+                    gameTimer.cancel();
+                    // Erase contents
+                    contentPane.removeAll();
+                    contentPane.revalidate();
+                    contentPane.repaint();
+                    menuScreen();
+                }
+            }
+            cars[0].resetCheckpointCount();
+
+        }
+
+    }
+
+    private void restartTimeTrial() {
+        // Create trackPanel and add cars
+        trackPanel = new TrackPanel(track, 1);
+        trackPanel.setFocusable(true);
+        cars = new Car[1];
+        cars[0] = new Car(100, 100, "testCar.jpg");
+        trackPanel.setCar(cars[0]);
+
+        // Add trackPanel to gameJFrame
+        gameJFrame.add(trackPanel);
+        gameJFrame.pack();
+        gameJFrame.revalidate();
+        trackPanel.repaint();
+        trackPanel.requestFocusInWindow();
+
+        // Set title in here
+        gameJFrame.setTitle("Time Trial Gamemode: Press W to Start Countdown");
+
+        gameJFrame.setVisible(true);
+        trackPanel.addKeyListener(this);
+        startGame = true;
     }
 
     /**
@@ -245,6 +312,36 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         // Schedule repeated updates
         gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
     }
+
+    /**
+     * Creates a swing timer that lasts 3 seconds that then allows key inputs
+     */
+    private void startCountdown() {
+        startGame = false;
+        int[] countdown = {COUNTDOWN};
+        javax.swing.Timer timer = new javax.swing.Timer(1000, null);
+        timer.addActionListener(e -> {
+            if (countdown[0] > 0) {
+                gameJFrame.setTitle(String.valueOf(countdown[0]));
+                countdown[0]--;
+            } else {
+                ((javax.swing.Timer)e.getSource()).stop();
+                gameRunning = true;
+
+
+                gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+
+            }
+        });
+
+        timer.setInitialDelay(0);
+        timer.start();
+    }
+
+    /**
+     * This method is called when a car crosses a checkpoint, creates a half second timer for
+     */
+    private void checkPointCooldownTimer(Car car) {}
 
 
     /**
@@ -264,6 +361,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             carPos = car.getPos();
             carTile = carPosToTile(carPos);
             carSurface = carTile.getSurface();
+            // Call Time trial for tile checking
+            timeTrial(carSurface);
 
             car.setGrip(carSurface.grip);
             car.setAccelerationMultiplier(carSurface.accelMultiplier);
@@ -288,7 +387,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_W -> up = true;
+            case KeyEvent.VK_W -> {
+                // Only start countdown if the game is not running
+                if (!gameRunning && startGame) {
+                    startCountdown();
+                } else if (gameRunning){
+                    up = true;
+                }
+            }
             case KeyEvent.VK_S -> down = true;
             case KeyEvent.VK_A -> left = true;
             case KeyEvent.VK_D -> right = true;
@@ -362,14 +468,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (e.getStateChange() == ItemEvent.SELECTED) {
             // Check if source is track or gamemode
             for (JRadioButton gamemodeButton: gamemodeSelection) {
-                if ((JRadioButton)e.getSource() == gamemodeButton) {
-                    currentGamemodeButton = (JRadioButton) gamemodeButton;
+                if (e.getSource() == gamemodeButton) {
+                    currentGamemodeButton = gamemodeButton;
                 }
             }
-
             for (JRadioButton trackButton: trackDifficulty) {
-                if ((JRadioButton)e.getSource() == trackButton) {
-                    currentTrackButton = (JRadioButton) trackButton;
+                if (e.getSource() == trackButton) {
+                    currentTrackButton =  trackButton;
                 }
             }
         }
@@ -383,15 +488,16 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == playButton) {
+
             // Remove all components, revalidate and repaint to update the display
             contentPane.removeAll();
             contentPane.revalidate();
             contentPane.repaint();
-
+            startGame = true;
             // Initialize tracks
             if (currentTrackButton == easyTrackButton) {
                 // Easy track
-                track = new Track("src/data/track120x100.txt");
+                track = new Track("src/data/track120x100.txt", 2);
             } else if (currentTrackButton == mediumTrackButton) {
                 // Add medium track when I get it
             } else {
@@ -400,24 +506,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
             // game mode
             if (currentGamemodeButton == timeTrialButton) {
-                // Create trackPanel and add cars
-                trackPanel = new TrackPanel(track, 1);
-                trackPanel.setFocusable(true);
-                cars = new Car[1];
-                cars[0] = new Car(100, 100, "testCar.jpg");
-                trackPanel.setCar(cars[0]);
-
-                // Add trackPanel to gameJFrame
-                gameJFrame.add(trackPanel);
-                gameJFrame.pack();
-                gameJFrame.revalidate();
-                trackPanel.repaint();
-
-                gameJFrame.setVisible(true);
-
-
-                // Run time trial game logic
-                timeTrial();
+                restartTimeTrial();
             } else if (currentGamemodeButton == twoPlayerButton) {
                 // Create trackPanel and add cars
                 trackPanel = new TrackPanel(track, 2);
@@ -436,9 +525,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
                 gameJFrame.setVisible(true);
 
-
-                // Run two player game logic
-                twoPlayer();
             }
         }
     }

@@ -13,13 +13,16 @@ public class Track {
     private Tile[][] track;
     private int rows;
     private int cols;
+    private final int numCheckpoints;
 
     /**
      * Constructor for Track class
      *
      * @param filename takes file path to the file
      */
-    public Track (String filename) {
+    public Track (String filename, int numCheckpoints) {
+        // I will just pass number of checkpoints, will be used in game logic
+        this.numCheckpoints = numCheckpoints;
         int lineCount = 0;
         try (final FileReader fileReader = new FileReader(new File(filename));
              final BufferedReader buffReader = new BufferedReader(fileReader)) {
@@ -93,6 +96,10 @@ public class Track {
         return track[yPos / Tile.getTileSize()][xPos / Tile.getTileSize()];
     }
 
+    public Tile.Surface getCurrentSurface(Tile tile) {
+        return tile.getSurface();
+    }
+
     /**
      * This function checks to see if a Tile in the track is a slow Time, Grass
      *
@@ -116,6 +123,10 @@ public class Track {
 
     public int getCols() {
         return cols;
+    }
+
+    public int getNumCheckpoints() {
+        return numCheckpoints;
     }
 
 }

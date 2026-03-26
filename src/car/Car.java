@@ -44,6 +44,7 @@ public class Car {
     // Added to keep track of car positioning on track, used by later game logic will
     private int lap;
     private int checkPointCount;
+    private boolean checkpointCooldown;
     // Used to make sure we don't increment Finish, might need to be a data structure where we just look at the last amount
     // of Tiles
     private Tile lastTile;
@@ -61,6 +62,9 @@ public class Car {
         this.yPos = yPos;
         this.velocity = new VelocityVector();
         this.imgFileName = imgFileName;
+        // Set to true initially, so it can count checkpoints it crosses
+        this.checkpointCooldown = true;
+        this.lap = 0;
         loadImage();
     }
 
@@ -203,12 +207,16 @@ public class Car {
         this.lap = lap;
     }
 
-    public int getLap () {
+    public int getLap() {
         return lap;
     }
 
-    public void incrementLap () {
+    public void incrementLap() {
         lap += 1;
+    }
+
+    public void resetLap() {
+        lap = 0;
     }
 
     public int getCheckPointCount() {
@@ -240,5 +248,13 @@ public class Car {
     public void setAccelerationMultiplier(double amount){ accelerationMultiplier = amount;}
 
     public void setMaxSpeed(double amount){ maxSpeed = amount;}
+
+    public boolean getCheckpointCooldown() {
+        return checkpointCooldown;
+    }
+
+    public void setCheckpointCooldown(boolean a) {
+        checkpointCooldown = a;
+    }
 
 }

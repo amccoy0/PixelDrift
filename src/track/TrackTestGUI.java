@@ -12,7 +12,7 @@ import java.awt.*;
 public class TrackTestGUI {
 
     public static void main(String[] args) {
-        Track track = new Track("src/data/track120x100.txt");
+        Track track = new Track("src/data/track120x100.txt", 2);
         JFrame frame = new JFrame("Track draw test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
