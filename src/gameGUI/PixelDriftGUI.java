@@ -257,8 +257,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Stop timer and game
 
                 gameRunning = false;
+                cars[0].stopTimer();
                 // Display in message and ask if they want to go to the menu or play again
-                JOptionPane.showMessageDialog(null, "You finished the track in: ");
+                JOptionPane.showMessageDialog(null, "You finished the track in: " +cars[0].getRaceTime() + " seconds!" );
                 int selection = JOptionPane.showConfirmDialog(null,"Choose one",
                         "Would you like to play again?", JOptionPane.YES_NO_OPTION);
                 // Return to menu or call play again
@@ -335,6 +336,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Stop timer and start game
                 ((javax.swing.Timer)e.getSource()).stop();
                 gameRunning = true;
+                for (Car car : cars){
+                    car.startTimer();
+                }
                 gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
 
             }
@@ -356,6 +360,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      */
     @Override
     public void run() {
+
+        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
         if (!gameRunning) return;
         for (Car car: cars) {
             car.setDrift(drift);
