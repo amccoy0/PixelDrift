@@ -49,6 +49,10 @@ public class Car {
     // of Tiles
     private Tile lastTile;
 
+    private double startTime;
+    private double endTime;
+    private double raceTime;
+
 
     /**
      * Constructs a Car object at the specified position.
@@ -256,5 +260,24 @@ public class Car {
     public void setCheckpointCooldown(boolean a) {
         checkpointCooldown = a;
     }
+
+    public void startTimer(){
+        startTime = System.currentTimeMillis();
+    }
+
+    public void stopTimer(){
+        endTime = System.currentTimeMillis();
+        raceTime = endTime-startTime;
+        raceTime/=1000;
+    }
+
+    public double getCurrentTime(){
+        return (System.currentTimeMillis() - startTime)/1000;
+    }
+
+    public double getRaceTime(){
+        return raceTime;
+    }
+
 
 }
