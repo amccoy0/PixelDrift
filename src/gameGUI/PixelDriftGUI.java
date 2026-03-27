@@ -240,6 +240,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /**
      * This method will handle single player time trial logic, called by gameTimer
+     *
+     * @param surface
      */
     private void timeTrial(Tile.Surface surface) {
         // Update title with timer here
@@ -253,7 +255,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             // Check if car has reached max lap count and stop game
-            if (cars[0].getLap() == MAX_LAPS) {
+            if (cars[0].getLap() >= MAX_LAPS) {
                 // Stop timer and game
 
                 gameRunning = false;
