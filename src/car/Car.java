@@ -41,9 +41,11 @@ public class Car {
     /** Indicates whether the car is drifting. */
     private boolean drift = false;
 
-    // Added to keep track of car positioning on track, used by later game logic will
+    /** The car's personal lapcount, starts at 0 */
     private int lap;
+    /** How many checkpoints the car has crossed in the lap, used to determine whether or not the car can incrememnt lap */
     private int checkPointCount;
+    /** Used in a timer, true when the car can cross a checkpoint and have it count */
     private boolean checkpointCooldown;
     // Used to make sure we don't increment Finish, might need to be a data structure where we just look at the last amount
     // of Tiles

@@ -8,7 +8,6 @@ import java.awt.*;
 /**
  * TrackPanel.java
  * Author: August McCoy
- * Date: 3/4/26
  * Code Description: This class represents the visual Track. It extends JPanel to allow the use of the paint component
  * method which allows us to draw the track. Each Tile in the track is represented by a 5x5 pixel square.
  */
@@ -81,7 +80,7 @@ public class TrackPanel extends JPanel {
 
     /**
      * This is used to assign a car to the track panel so
-     * @param car
+     * @param car the car being assigned to the track
      */
     public void setCar(Car car) {
         // Set the car to a null spot in array

@@ -10,13 +10,22 @@ import java.util.Random;
  * generated.
  */
 public class Tile {
+    /** Random used for applying random variation to the tile base color */
     private static final Random rand = new Random();
+
+    /** The size of the tile, # x # */
     private static final int TILE_SIZE = 8;
 
+    /** The xPos of the tile in the double array */
     private final int xPos;
+
+    /** The yPos of the tile in the double array */
     private final int yPos;
+
+    /** Surface of the tile, used to store information */
     private final Surface surface;
 
+    /** Color of the tile */
     private Color tileColor;
 
     /**
@@ -48,6 +57,7 @@ public class Tile {
 
     /**
      * Constructor, Track will read a double array and pass XPos, YPos, and tileType
+     *
      * @param xPos the xPos of the tile in the array
      * @param yPos the yPos of the tile in the array
      * @param tileType the char of the tileyupe

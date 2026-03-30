@@ -10,9 +10,16 @@ import java.io.*;
  * game logic and the drawing of the track.
  */
 public class Track {
+    /** Double tile array to store the track tiles for drawing/gamelogic */
     private Tile[][] track;
+
+    /** The number of rows in the track */
     private int rows;
+
+    /** The number of columns in the track */
     private int cols;
+
+    /** The number of checkpoints on the track, not individual tiles but the number of checkpoint lines on the track */
     private final int numCheckpoints;
 
     /**
@@ -96,10 +103,12 @@ public class Track {
         return track[yPos / Tile.getTileSize()][xPos / Tile.getTileSize()];
     }
 
+    // Not used
     public Tile.Surface getCurrentSurface(Tile tile) {
         return tile.getSurface();
     }
 
+    // Not used
     /**
      * This function checks to see if a Tile in the track is a slow Time, Grass
      *
@@ -112,19 +121,34 @@ public class Track {
 //    }
 
 
-    // Getters, might remove later, don't know if they will be used yet
+    // Not used
     public Tile[][] getTrack() {
         return track;
     }
 
+    /**
+     * Getter for track rows
+     *
+     * @return rows the number of rows in the track
+     */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Getter for track columns
+     *
+     * @return cols the number of columns in the track
+     */
     public int getCols() {
         return cols;
     }
 
+    /**
+     * Getter for the number of track checkpoints
+     *
+     * @return numCheckpoints the number of checkpoints on the track
+     */
     public int getNumCheckpoints() {
         return numCheckpoints;
     }

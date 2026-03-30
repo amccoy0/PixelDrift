@@ -257,14 +257,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (surface == Tile.Surface.CHECKPOINT && cars[0].getCheckpointCooldown()) {
             // Incremement checkpoint count and start checkpoint cooldown
             cars[0].incrementCheckpointCount();
-            //cars[0].setCheckpointCooldown(false);
+            cars[0].setCheckpointCooldown(false);
+            checkpointTick(cars[0]);
         // Check if current tile is finish
         }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             // Check if car has reached max lap count and stop game
             if (cars[0].getLap() >= MAX_LAPS) {
                 // Stop timer and game
-
                 gameRunning = false;
                 cars[0].stopTimer();
                 // Display in message and ask if they want to go to the menu or play again
@@ -333,10 +333,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * Creates a swing timer that lasts 3 seconds that then allows key inputs, used at start of race
      */
     private void startCountdown() {
+        // Set start game to false so the car can't move
         startGame = false;
+        // Initialize an array with countdown so we can countdown every second
         int[] countdown = {COUNTDOWN};
+        // Specify swing timer because of util timer
         javax.swing.Timer timer = new javax.swing.Timer(1000, null);
         timer.addActionListener(e -> {
+            // If countdown > 0 display and decrement
             if (countdown[0] > 0) {
                 gameJFrame.setTitle(String.valueOf(countdown[0]));
                 // Decrease countdown
@@ -345,6 +349,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Stop timer and start game
                 ((javax.swing.Timer)e.getSource()).stop();
                 gameRunning = true;
+                // Start car timers
                 for (Car car : cars){
                     car.startTimer();
                 }
@@ -358,9 +363,23 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * This method is called when a car crosses a checkpoint, creates a half second timer for
+     * This method is used so the user can't cross a checkpoint repeatedly, adds a delay for the Car attribute of
+     * checkpoint cooldown to be set to true which is used in game logic to determine if the crossing of a checkpoint
+     * incrememnts the cars checkpoint count.
+     *
+     * @param car the Car that hit the checkpoint
      */
-    private void checkPointCooldownTimer(Car car) {}
+    private void checkpointTick(Car car) {
+        // Create timer for 3 seconds to set car's checkpoint cooldwon to true
+        javax.swing.Timer timer = new javax.swing.Timer(3000, null);
+        timer.addActionListener(e -> {
+            // True means its over and can cross the checkpoint
+            car.setCheckpointCooldown(true);
+            ((javax.swing.Timer)e.getSource()).stop();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
 
 
     /**
