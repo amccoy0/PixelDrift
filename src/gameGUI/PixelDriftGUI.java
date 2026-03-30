@@ -32,32 +32,43 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Main game window. */
     private final JFrame gameJFrame;
 
-    /** JRadio Buttons for track difficulty and gamemode */
+    /** JRadioButton array for track difficulty */
     private JRadioButton[] trackDifficulty;
+    /** JRadioButton array for gamemode */
     private JRadioButton[] gamemodeSelection;
+    /** JRadioButton for time trial gamemode */
     private JRadioButton timeTrialButton;
+    /** JRadioButton for two player gamemode */
     private JRadioButton twoPlayerButton;
+    /** JRadioButton for keep track of the currently selected track button */
     private JRadioButton currentTrackButton;
+    /** JRadioButton for keep track of the currently selected gamemode button */
     private JRadioButton currentGamemodeButton;
+    /** JRadioButton for easy track */
     private JRadioButton easyTrackButton;
+    /** JRadioButton for medium track */
     private JRadioButton mediumTrackButton;
+    /** JRadioButton for hard track */
     private JRadioButton hardTrackButton;
 
-    /** Button Groups for JRadioButtons */
+    /** Button Group for track JRadioButtons */
     private ButtonGroup trackButtonGroup;
+    /** Button Group for gamemode JRadioButtons */
     private ButtonGroup gamemodeButtonGroup;
 
 
 
-    /** Panels for JRadioButtons */
+    /** JPanels for gamemode JRadioButtons */
     private JPanel gamemodeButtonPanel;
+    /** JPanels for track JRadioButtons */
     private JPanel trackButtonPanel;
 
-    /** Play Button */
+    /** Play Button for menu to start game, has action listener*/
     private JButton playButton;
 
     /** Image for starting screen */
     private ImageIcon titleImage;
+    /** JLabel to add image to for starting screen */
     private JLabel imageLabel;
 
     /** Container used for drawing the game. */
@@ -80,18 +91,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Used to store track data */
     private Track track;
+    /** Used to draw track and cars */
     private TrackPanel trackPanel;
 
     /** Indicates whether the game is currently running. */
     private boolean gameRunning;
 
-    /** Used for countdown timer */
+    /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
-
-
-
-
-
 
     /**
      * Constructor
@@ -363,8 +370,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void run() {
 
-        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
+
         if (!gameRunning) return;
+        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
         for (Car car: cars) {
             car.setDrift(drift);
             if (up) car.accelerate(0.2);

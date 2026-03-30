@@ -48,13 +48,15 @@ public class Tile {
 
     /**
      * Constructor, Track will read a double array and pass XPos, YPos, and tileType
+     * @param xPos the xPos of the tile in the array
+     * @param yPos the yPos of the tile in the array
+     * @param tileType the char of the tileyupe
      */
     public Tile(int xPos, int yPos, char tileType) {
         this.xPos = xPos;
         this.yPos = yPos;
 
-
-        // Placeholder for basic color
+        // Switch statement for tile type to assign surface enumeration
         switch (tileType) {
             case 'D':
                 surface = Surface.DIRT;
@@ -91,7 +93,11 @@ public class Tile {
         this.tileColor = Color.getHSBColor(hue, saturation, brightness);
     }
 
-    // Getters may need to update getters based on later game logic
+    /**
+     * Getter for tile color
+     *
+     * @return the Color of the tile
+     */
     public Color getTileColor() {
         return tileColor;
     }
@@ -104,6 +110,11 @@ public class Tile {
         return yPos;
     }
 
+    /**
+     * Getter for Surface enumeration of tile
+     *
+     * @return the Surface of the tile
+     */
     public Surface getSurface() {
         return surface;
     }
@@ -112,7 +123,11 @@ public class Tile {
         return surface.checkpoint;
     }
 
-    // This method is static so I can access it without initializing a tile for GUI purposes
+    /**
+     * This method is static so I can access it without initializing a tile for GUI purposes
+     *
+     * @return TILE_SIZE the size of the tile # x #
+     */
     static int getTileSize() {
         return TILE_SIZE;
     }
