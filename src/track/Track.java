@@ -127,6 +127,17 @@ public class Track {
     }
 
     /**
+     * This fucntion is used in TrackDrawerGUI to write the tile's char to the file
+     *
+     * @param row the row of the tile
+     * @param col the column of the tile
+     * @return the Tile at the specific row + col
+     */
+    public Tile getSpecificTile(int row, int col) {
+        return track[row][col];
+    }
+
+    /**
      * Getter for track rows
      *
      * @return rows the number of rows in the track
@@ -151,6 +162,34 @@ public class Track {
      */
     public int getNumCheckpoints() {
         return numCheckpoints;
+    }
+
+    /**
+     * This function is only used by TrackDrawerGUI to edit track tiles to allow us to customize tracks and make them
+     * more enjoyable for the user.
+     *
+     * @param row the row of the Tile in the track data structure
+     * @param col the column of the Tile in the track data structure
+     * @param c the character we are changing the Tile to, Make a new tile and inserting it where we want
+     */
+    public void changeTile(int row, int col, char c) {
+        switch (c) {
+            case ('D'):
+                track[row][col] = new Tile(row, col, 'D');
+                break;
+            case ('F'):
+                track[row][col] = new Tile(row, col, 'F');
+                break;
+            case ('C'):
+                track[row][col] = new Tile(row, col, 'C');
+                break;
+            case ('S'):
+                track[row][col] = new Tile(row, col, 'S');
+                break;
+            default:
+                track[row][col] = new Tile(row, col, 'G');
+
+        }
     }
 
 }

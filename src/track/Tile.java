@@ -22,6 +22,9 @@ public class Tile {
     /** The yPos of the tile in the double array */
     private final int yPos;
 
+    /** I had to add this back in so the TrackDrawerGUI can write it to a file */
+    private final char tileType;
+
     /** Surface of the tile, used to store information */
     private final Surface surface;
 
@@ -34,8 +37,10 @@ public class Tile {
     public enum Surface {
         DIRT('D', 0.97, 0.8, 6.0, false, new Color(139, 69, 19)),
         GRASS('G', 0.93, 0.75, 3.5, false, new Color(34, 139, 34)),
+        SAND('S', 0.95, 0.78, 5.0, false, Color.YELLOW),
         FINISH('F',0.97, 0.8, 6.0, true, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 6.0, true, Color.BLUE);
+
 
         public final char tileType;
         public final double grip;
@@ -65,6 +70,7 @@ public class Tile {
     public Tile(int xPos, int yPos, char tileType) {
         this.xPos = xPos;
         this.yPos = yPos;
+        this.tileType = tileType;
 
         // Switch statement for tile type to assign surface enumeration
         switch (tileType) {
@@ -76,6 +82,9 @@ public class Tile {
                 break;
             case 'C':
                 surface = Surface.CHECKPOINT;
+                break;
+            case 'S':
+                surface = Surface.SAND;
                 break;
             default:
                 surface = Surface.GRASS;
@@ -127,6 +136,10 @@ public class Tile {
      */
     public Surface getSurface() {
         return surface;
+    }
+
+    public char getTileType() {
+        return tileType;
     }
 
     public boolean isCheckpoint() {
