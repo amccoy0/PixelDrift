@@ -8,16 +8,25 @@ import java.awt.*;
 /**
  * TrackPanel.java
  * Author: August McCoy
- * Date: 3/4/26
  * Code Description: This class represents the visual Track. It extends JPanel to allow the use of the paint component
  * method which allows us to draw the track. Each Tile in the track is represented by a 5x5 pixel square.
  */
 public class TrackPanel extends JPanel {
+    /** Track that will be assigned to track panel for redrawing */
     private Track track;
-    // Array of cars for later game use
+
+    /** Number of cars in the array of cars, not constant for future gamemodes + ability to be changed between gamemodes */
     private final int numCars;
+
+    /** Array of cars for redrawing */
     private Car[] cars;
 
+    /**
+     * Constructor for TrackPanel
+     *
+     * @param track the track that the TrackPanel will store and redraw
+     * @param numCars the number of cars on the TrackPanel
+     */
     public TrackPanel(Track track, int numCars) {
         this.track = track;
         this.numCars = numCars;
@@ -33,6 +42,7 @@ public class TrackPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Redraw the track
         for (int r = 0; r < track.getRows(); r++) {
             for (int c = 0; c < track.getCols(); c++) {
 
@@ -53,7 +63,13 @@ public class TrackPanel extends JPanel {
         }
     }
 
-    // This is so the track will show fully without having to use magic numbers due to window sizing
+
+
+    /**
+     * This is used so the track will show fully without having to use magic numbers due to window sizing
+     *
+     * @return Dimension of the window that will show everything
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(
@@ -64,9 +80,10 @@ public class TrackPanel extends JPanel {
 
     /**
      * This is used to assign a car to the track panel so
-     * @param car
+     * @param car the car being assigned to the track
      */
     public void setCar(Car car) {
+        // Set the car to a null spot in array
         for (int i = 0; i < numCars; i++) {
             if (cars[i] == null) {
                 this.cars[i] = car;

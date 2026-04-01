@@ -5,7 +5,6 @@ import java.io.IOException;
 /**
  * TrackGenerator.java
  * Author: ChatGPT
- * Date: 3/4/26
  * Code Description: This class generates files for track generation. It was implemented by ChatGPT to write base track
  * files that will be editted later.
  */

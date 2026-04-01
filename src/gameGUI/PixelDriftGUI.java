@@ -32,32 +32,43 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Main game window. */
     private final JFrame gameJFrame;
 
-    /** JRadio Buttons for track difficulty and gamemode */
+    /** JRadioButton array for track difficulty */
     private JRadioButton[] trackDifficulty;
+    /** JRadioButton array for gamemode */
     private JRadioButton[] gamemodeSelection;
+    /** JRadioButton for time trial gamemode */
     private JRadioButton timeTrialButton;
+    /** JRadioButton for two player gamemode */
     private JRadioButton twoPlayerButton;
+    /** JRadioButton for keep track of the currently selected track button */
     private JRadioButton currentTrackButton;
+    /** JRadioButton for keep track of the currently selected gamemode button */
     private JRadioButton currentGamemodeButton;
+    /** JRadioButton for easy track */
     private JRadioButton easyTrackButton;
+    /** JRadioButton for medium track */
     private JRadioButton mediumTrackButton;
+    /** JRadioButton for hard track */
     private JRadioButton hardTrackButton;
 
-    /** Button Groups for JRadioButtons */
+    /** Button Group for track JRadioButtons */
     private ButtonGroup trackButtonGroup;
+    /** Button Group for gamemode JRadioButtons */
     private ButtonGroup gamemodeButtonGroup;
 
 
 
-    /** Panels for JRadioButtons */
+    /** JPanels for gamemode JRadioButtons */
     private JPanel gamemodeButtonPanel;
+    /** JPanels for track JRadioButtons */
     private JPanel trackButtonPanel;
 
-    /** Play Button */
+    /** Play Button for menu to start game, has action listener*/
     private JButton playButton;
 
     /** Image for starting screen */
     private ImageIcon titleImage;
+    /** JLabel to add image to for starting screen */
     private JLabel imageLabel;
 
     /** Container used for drawing the game. */
@@ -80,18 +91,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Used to store track data */
     private Track track;
+    /** Used to draw track and cars */
     private TrackPanel trackPanel;
 
     /** Indicates whether the game is currently running. */
     private boolean gameRunning;
 
-    /** Used for countdown timer */
+    /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
-
-
-
-
-
 
     /**
      * Constructor
@@ -240,6 +247,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /**
      * This method will handle single player time trial logic, called by gameTimer
+     *
+     * @param surface
      */
     private void timeTrial(Tile.Surface surface) {
         // Update title with timer here
@@ -248,14 +257,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (surface == Tile.Surface.CHECKPOINT && cars[0].getCheckpointCooldown()) {
             // Incremement checkpoint count and start checkpoint cooldown
             cars[0].incrementCheckpointCount();
-            //cars[0].setCheckpointCooldown(false);
+            cars[0].setCheckpointCooldown(false);
+            checkpointTick(cars[0]);
         // Check if current tile is finish
         }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             // Check if car has reached max lap count and stop game
-            if (cars[0].getLap() == MAX_LAPS) {
+            if (cars[0].getLap() >= MAX_LAPS) {
                 // Stop timer and game
-
                 gameRunning = false;
                 cars[0].stopTimer();
                 // Display in message and ask if they want to go to the menu or play again
@@ -324,10 +333,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * Creates a swing timer that lasts 3 seconds that then allows key inputs, used at start of race
      */
     private void startCountdown() {
+        // Set start game to false so the car can't move
         startGame = false;
+        // Initialize an array with countdown so we can countdown every second
         int[] countdown = {COUNTDOWN};
+        // Specify swing timer because of util timer
         javax.swing.Timer timer = new javax.swing.Timer(1000, null);
         timer.addActionListener(e -> {
+            // If countdown > 0 display and decrement
             if (countdown[0] > 0) {
                 gameJFrame.setTitle(String.valueOf(countdown[0]));
                 // Decrease countdown
@@ -336,6 +349,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Stop timer and start game
                 ((javax.swing.Timer)e.getSource()).stop();
                 gameRunning = true;
+                // Start car timers
                 for (Car car : cars){
                     car.startTimer();
                 }
@@ -349,9 +363,23 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * This method is called when a car crosses a checkpoint, creates a half second timer for
+     * This method is used so the user can't cross a checkpoint repeatedly, adds a delay for the Car attribute of
+     * checkpoint cooldown to be set to true which is used in game logic to determine if the crossing of a checkpoint
+     * incrememnts the cars checkpoint count.
+     *
+     * @param car the Car that hit the checkpoint
      */
-    private void checkPointCooldownTimer(Car car) {}
+    private void checkpointTick(Car car) {
+        // Create timer for 3 seconds to set car's checkpoint cooldwon to true
+        javax.swing.Timer timer = new javax.swing.Timer(3000, null);
+        timer.addActionListener(e -> {
+            // True means its over and can cross the checkpoint
+            car.setCheckpointCooldown(true);
+            ((javax.swing.Timer)e.getSource()).stop();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
 
 
     /**
@@ -361,8 +389,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void run() {
 
-        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
+
         if (!gameRunning) return;
+        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
         for (Car car: cars) {
             car.setDrift(drift);
             if (up) car.accelerate(0.2);
