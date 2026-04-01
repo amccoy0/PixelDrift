@@ -1,12 +1,3 @@
-/**
- * File name: Car.java
- *
- * Description:
- * Represents a car object in the game.
- * The car has a position, velocity vector, orientation angle,
- * and can optionally display a sprite image.
- */
-
 package car;
 
 import track.Tile;
@@ -15,7 +6,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-
+/**
+ * File name: Car.java
+ *
+ * Description:
+ * Represents a car object in the game.
+ * The car has a position, velocity vector, orientation angle,
+ * and can optionally display a sprite image.
+ */
 public class Car {
 
     private double xPos;
