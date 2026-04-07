@@ -22,6 +22,9 @@ public class Track {
     /** The number of checkpoints on the track, not individual tiles but the number of checkpoint lines on the track */
     private final int numCheckpoints;
 
+    /** The grouped checkpoints used to recolor a group when a single one is hit */
+    private final CheckPointGroups checkPointGroups;
+
     /**
      * Constructor for Track class
      *
@@ -31,6 +34,7 @@ public class Track {
         // I will just pass number of checkpoints, will be used in game logic
         this.numCheckpoints = numCheckpoints;
         int lineCount = 0;
+
         try (final FileReader fileReader = new FileReader(new File(filename));
              final BufferedReader buffReader = new BufferedReader(fileReader)) {
             // Read first line to create track
@@ -77,6 +81,8 @@ public class Track {
             System.err.println("Data file error at line " + lineCount);
             System.err.println("Ignoring rest of file");
         }
+
+        this.checkPointGroups = new CheckPointGroups(rows, cols, numCheckpoints, this);
     }
 
 
@@ -100,6 +106,10 @@ public class Track {
      * @return a Tile in the track
      */
     public Tile getCurrentTile(int xPos, int yPos) {
+        if (xPos < 0 || yPos < 0 || xPos > cols * Tile.getTileSize() || yPos > rows * Tile.getTileSize()) {
+            System.err.println("X or Y Position out of bounds: " + xPos + ", " + yPos);
+            return null;
+        }
         return track[yPos / Tile.getTileSize()][xPos / Tile.getTileSize()];
     }
 
@@ -190,6 +200,24 @@ public class Track {
                 track[row][col] = new Tile(row, col, 'G');
 
         }
+    }
+
+    /**
+     * References CheckPointGroups method of changing all of the connected checkPoint tiles when a checkPoint is hit
+     *
+     *  @param xPos column of hit checkpoint
+     *  @param yPos row of hit checkpoint
+     */
+    public void hitCheckpointGroup(int xPos, int yPos) {
+        checkPointGroups.changeGroupColor(xPos, yPos);
+    }
+
+    /**
+     * References CheckPointGroups method of resetting all of the checkpoints colors to the non-hit color when the car
+     * crosses the finish.
+     */
+    public void resetCheckpoints() {
+        checkPointGroups.resetAllGroups();
     }
 
 }

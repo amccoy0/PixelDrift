@@ -23,7 +23,7 @@ public class TrackGenerator {
                 track[r][c] = 'G';
             }
         }
-
+        /*
         // Define a simple loop rectangle in the middle
         int top = grassBorder;
         int left = grassBorder;
@@ -46,9 +46,9 @@ public class TrackGenerator {
         int finishRow = top + trackThickness / 2;
         int finishCol = left + trackThickness;
         track[finishRow][finishCol] = 'F';
-
+        */
         // Write to file
-        try (FileWriter writer = new FileWriter("src/data/track120x100.txt")) {
+        try (FileWriter writer = new FileWriter("src/data/grass.txt")) {
             writer.write(cols + " " + rows + "\n"); // first line: width height
             for (int r = 0; r < rows; r++) {
                 for (int c = 0; c < cols; c++) {

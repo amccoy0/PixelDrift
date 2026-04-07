@@ -258,10 +258,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             // Incremement checkpoint count and start checkpoint cooldown
             cars[0].incrementCheckpointCount();
             cars[0].setCheckpointCooldown(false);
+            track.hitCheckpointGroup(carTile.getXPos(), carTile.getYPos());
             checkpointTick(cars[0]);
         // Check if current tile is finish
         }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
+            track.resetCheckpoints();
             // Check if car has reached max lap count and stop game
             if (cars[0].getLap() >= MAX_LAPS) {
                 // Stop timer and game
@@ -371,7 +373,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      */
     private void checkpointTick(Car car) {
         // Create timer for 3 seconds to set car's checkpoint cooldwon to true
-        javax.swing.Timer timer = new javax.swing.Timer(3000, null);
+        javax.swing.Timer timer = new javax.swing.Timer(1000, null);
         timer.addActionListener(e -> {
             // True means its over and can cross the checkpoint
             car.setCheckpointCooldown(true);
@@ -541,6 +543,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 track = new Track("src/data/track120x100.txt", 2);
             } else if (currentTrackButton == mediumTrackButton) {
                 // Add medium track when I get it
+                track = new Track("src/data/mediumTrack.txt", 4);
             } else {
                 // Hard track add when I draw it
             }

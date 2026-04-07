@@ -129,7 +129,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         contentPane.add(buttonPanel, BorderLayout.NORTH);
 
         // numCheckpoints doesn't really matter in this context because it is assigned in PixelDrift, we are just drawing.
-        track = new Track("src/data/track120x100.txt", 2);
+        track = new Track("src/data/mediumTrack.txt", 2);
         trackPanel = new TrackPanel(track, 0);
         contentPane.add(trackPanel, BorderLayout.SOUTH);
         drawingJFrame.pack();
@@ -151,6 +151,11 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         trackPanel.repaint();
     }
 
+    /**
+     * Main to create a new TrackDrawerGUI and start the drawer
+     *
+     * @param args, the code being processed in main
+     */
     public static void main(String[] args) {
         new TrackDrawerGUI();
     }
@@ -172,7 +177,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
             }
             System.out.println("Track generated successfully!");
         } catch (IOException e) {
-            e.getMessage();
+            System.err.println(e.getMessage());
         }
     }
 
@@ -234,21 +239,39 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         track.changeTile(y / getTileSize(), x / getTileSize(), currentTileChar);
     }
 
+    /**
+     * Not used
+     * @param e the event to be processed
+     */
     @Override
     public void mousePressed(MouseEvent e) {
 
     }
 
+    /**
+     * Not used
+     * @param e the event to be processed
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
 
     }
 
+    /**
+     * Not used
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    /**
+     * Not used
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void mouseExited(MouseEvent e) {
 
@@ -269,6 +292,10 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         track.changeTile(y / getTileSize(), x / getTileSize(), currentTileChar);
     }
 
+    /**
+     * Not used
+     * @param e the event to be processed
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
 

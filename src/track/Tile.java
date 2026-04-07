@@ -31,6 +31,11 @@ public class Tile {
     /** Color of the tile */
     private Color tileColor;
 
+    /** This is the Color of the checkPoint when it has been hit by a car */
+    private Color checkPointHitColor;
+
+    private boolean hitCheckpoint;
+
     /**
      * Enumeration to store surface data
      */
@@ -38,7 +43,7 @@ public class Tile {
         DIRT('D', 0.97, 0.8, 6.0, false, new Color(139, 69, 19)),
         GRASS('G', 0.93, 0.75, 3.5, false, new Color(34, 139, 34)),
         SAND('S', 0.95, 0.78, 5.0, false, Color.YELLOW),
-        FINISH('F',0.97, 0.8, 6.0, true, Color.WHITE),
+        FINISH('F',0.97, 0.8, 6.0, false, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 6.0, true, Color.BLUE);
 
 
@@ -71,6 +76,7 @@ public class Tile {
         this.xPos = xPos;
         this.yPos = yPos;
         this.tileType = tileType;
+        this.hitCheckpoint = false;
 
         // Switch statement for tile type to assign surface enumeration
         switch (tileType) {
@@ -82,6 +88,7 @@ public class Tile {
                 break;
             case 'C':
                 surface = Surface.CHECKPOINT;
+                checkPointHitColor = Color.RED;
                 break;
             case 'S':
                 surface = Surface.SAND;
@@ -118,7 +125,14 @@ public class Tile {
      * @return the Color of the tile
      */
     public Color getTileColor() {
+        if (surface == Surface.CHECKPOINT && hitCheckpoint) {
+            return checkPointHitColor;
+        }
         return tileColor;
+    }
+
+    public void setHitCheckpoint(boolean b) {
+        hitCheckpoint = b;
     }
 
     public int getXPos() {
