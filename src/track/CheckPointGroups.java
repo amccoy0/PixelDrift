@@ -142,24 +142,28 @@ public class CheckPointGroups {
         // Left col search, walk left down
         int leftRow = row;
         int leftCol = col;
-        while (leftCol - 1 >= 0 && leftRow + 1 < rows && track.getSpecificTile(leftRow + 1, leftCol - 1).isCheckpoint()) {
+        while (leftCol - 1 >= 0 && leftRow + 1 < rows &&
+                track.getSpecificTile(leftRow + 1, leftCol - 1).isCheckpoint()) {
             leftCol--;
             leftRow++;
         }
-        zone[0] = leftCol;
+        // Extended the zone by one to the left to make sure all of the checkpoint tiles are in the zone
+        zone[0] = leftCol - 1;
 
         // Right col search, walk right down
         int rightRow = row;
         int rightCol = col;
-        while (rightCol + 1 < cols && rightRow + 1 < rows && track.getSpecificTile(rightRow + 1,rightCol + 1).isCheckpoint()) {
+        while (rightCol + 1 < cols && rightRow + 1 < rows &&
+                track.getSpecificTile(rightRow + 1,rightCol + 1).isCheckpoint()) {
             rightCol++;
             rightRow++;
 
         }
-        zone[1] = rightCol;
+        // Added one here too because it was missing the farthest right one.
+        zone[1] = rightCol + 1;
 
-        // Bottom row is whichever went further down
-        zone[2] = Math.max(leftRow, rightRow);
+        // Bottom row is whichever went further down, I added one to this because it is missing one on diagonals
+        zone[2] = Math.max(leftRow, rightRow) + 1;
 
         return zone;
     }
