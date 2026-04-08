@@ -53,6 +53,11 @@ public class Car {
     private double endTime;
     private double raceTime;
 
+    private double prevX;
+    private double prevY;
+
+    private double bounceAngle;
+
 
     /**
      * Constructs a Car object at the specified position.
@@ -108,7 +113,8 @@ public class Car {
      * Also applies friction and limits the maximum speed.
      */
     public void move() {
-
+        prevX = xPos;
+        prevY = yPos;
         // move based on the velocity vector
         xPos += velocity.getXComp();
         yPos += velocity.getYComp();
@@ -277,6 +283,52 @@ public class Car {
 
     public double getRaceTime(){
         return raceTime;
+    }
+
+    public void hitWall() {
+
+        // move back outside wall
+        xPos = prevX;
+        yPos = prevY;
+
+        // get current velocity
+        double vx = velocity.getXComp();
+        double vy = velocity.getYComp();
+
+        // approximate normal along the biggest component
+        double absVx = Math.abs(vx);
+        double absVy = Math.abs(vy);
+        double normalX = 0;
+        double normalY = 0;
+
+        if (absVx > absVy) {
+            normalX = (vx > 0) ? -1 : 1;  // vertical wall
+        } else {
+            normalY = (vy > 0) ? -1 : 1;  // horizontal wall
+        }
+
+        hitWall(normalX, normalY);
+
+        // optional tiny push to prevent sticking
+        velocity.add(normalX * 0.05, normalY * 0.05);
+    }
+
+    public void hitWall(double normalX, double normalY) {
+        double length = Math.sqrt(normalX * normalX + normalY * normalY);
+        normalX /= length;
+        normalY /= length;
+
+        double dot = velocity.getXComp() * normalX + velocity.getYComp() * normalY;
+
+        // reflect: remove 2x the wall-facing component (not 1x)
+        velocity.add(
+                -2 * dot * normalX,
+                -2 * dot * normalY
+        );
+
+        // dampen slightly so it doesn't feel rubbery
+        velocity.scale(0.8);
+
     }
 
 
