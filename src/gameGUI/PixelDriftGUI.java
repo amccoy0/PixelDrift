@@ -142,6 +142,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         contentPane.add(imageLabel);
 
         gameJFrame.pack();
+        gameJFrame.setLocationRelativeTo(null);
         imageLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -239,7 +240,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         contentPane.add(trackButtonPanel, BorderLayout.CENTER);
         contentPane.add(playButton, BorderLayout.SOUTH);
 
-
+        gameJFrame.setLocationRelativeTo(null);
         gameJFrame.setVisible(true);
 
         // load track here and set cars to track panel and then load
@@ -321,6 +322,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         // Set title in here
         gameJFrame.setTitle("Time Trial Gamemode: Press W to Start Countdown");
 
+        gameJFrame.setLocationRelativeTo(null);
         gameJFrame.setVisible(true);
         trackPanel.addKeyListener(this);
         startGame = true;
