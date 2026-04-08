@@ -100,6 +100,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
 
+
+
     /**
      * Constructor
      */
@@ -260,8 +262,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             cars[0].setCheckpointCooldown(false);
             track.hitCheckpointGroup(carTile.getXPos(), carTile.getYPos());
             checkpointTick(cars[0]);
-        // Check if current tile is finish
-        }  else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
+        // Check if current tile is wall
+        } else if  (surface == Tile.Surface.WALL) {
+            cars[0].hitWall();
+            // Check if current tile is finish
+        } else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             track.resetCheckpoints();
             // Check if car has reached max lap count and stop game
@@ -303,7 +308,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         trackPanel = new TrackPanel(track, 1);
         trackPanel.setFocusable(true);
         cars = new Car[1];
-        cars[0] = new Car(100, 100, "testCar.jpg");
+        cars[0] = new Car(100, 100, "testCar.png");
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -556,8 +561,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel = new TrackPanel(track, 2);
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
-                cars[0] = new Car(100, 100, "testCar.jpg");
-                cars[1] = new Car(50, 100, "testCar.jpg");
+                cars[0] = new Car(100, 100, "testCar.png");
+                cars[1] = new Car(50, 100, "testCar.png");
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
