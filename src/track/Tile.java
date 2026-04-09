@@ -42,10 +42,10 @@ public class Tile {
     public enum Surface {
         DIRT('D', 0.97, 0.8, 6.0, false, new Color(139, 69, 19)),
         GRASS('G', 0.93, 0.75, 3.5, false, new Color(34, 139, 34)),
-        SAND('S', 0.95, 0.78, 5.0, false, Color.YELLOW),
+        SAND('S', 0.95, 0.78, 5.0, false, new Color(180, 160, 100)),
         FINISH('F',0.97, 0.8, 6.0, false, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 6.0, true, Color.BLUE),
-        BARRIER('B', 0.93, 0.75, 3.5, false, Color.PINK),
+        BARRIER('B', 0.93, 0.75, 3.5, false, new Color(34, 139, 34)),
         WALL('W', 0.93, 0.75, 3.5, false, Color.BLACK);
 
 

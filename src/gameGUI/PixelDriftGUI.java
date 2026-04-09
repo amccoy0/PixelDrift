@@ -562,13 +562,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Easy track
                 track = new Track("src/data/easyTrack.txt", 2);
             } else if (currentTrackButton == mediumTrackButton) {
-                // Add medium track when I get it
+                // Medium track
                 track = new Track("src/data/mediumTrack.txt", 4);
-            } else {
-                // Hard track add when I draw it
+            } else if (currentTrackButton == hardTrackButton) {
+                // Hard Track
+                track = new Track("src/data/hardTrack.txt", 4);;
             }
 
-            // game mode
+            // Game mode
             if (currentGamemodeButton == timeTrialButton) {
                 restartTimeTrial();
             } else if (currentGamemodeButton == twoPlayerButton) {
