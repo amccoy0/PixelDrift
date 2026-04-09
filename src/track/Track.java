@@ -199,6 +199,9 @@ public class Track {
             case ('W'):
                 track[row][col] = new Tile(row, col, 'W');
                 break;
+            case ('B'):
+                track[row][col] = new Tile(row, col, 'B');
+                break;
             default:
                 track[row][col] = new Tile(row, col, 'G');
 

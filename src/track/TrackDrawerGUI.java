@@ -54,6 +54,12 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
     /** This is the grass Tile JRadioButton */
     private JRadioButton grassButton;
 
+    /** This is the barrier Tile JRadioButton */
+    private JRadioButton barrierButton;
+
+    /** This is the wall Tile JRadioButton */
+    private JRadioButton wallButton;
+
     /** This is the currently selected Tile JRadioButton */
     private JRadioButton currentTileButton;
 
@@ -79,12 +85,14 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         contentPane = drawingJFrame.getContentPane();
 
         // Set up JRadioButtons
-        tileTypes = new JRadioButton[5];
+        tileTypes = new JRadioButton[7];
         grassButton = new JRadioButton("Grass");
         dirtButton = new JRadioButton("Dirt");
         sandButton = new JRadioButton("Sand");
         checkpointButton = new JRadioButton("Checkpoint");
         finishButton = new JRadioButton("Finish");
+        barrierButton = new JRadioButton("Barrier");
+        wallButton = new JRadioButton("Wall");
 
         grassButton.setSelected(true);
 
@@ -94,6 +102,8 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         tileTypes[2] = sandButton;
         tileTypes[3] = checkpointButton;
         tileTypes[4] = finishButton;
+        tileTypes[5] = barrierButton;
+        tileTypes[6] = wallButton;
 
         // Add Item Listeners
         grassButton.addItemListener(this);
@@ -101,6 +111,8 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         sandButton.addItemListener(this);
         checkpointButton.addItemListener(this);
         finishButton.addItemListener(this);
+        barrierButton.addItemListener(this);
+        wallButton.addItemListener(this);
 
         // Initialize button group and set currenTileButton + currentTileChar to grass button
         tileButtonGroup = new ButtonGroup();
@@ -129,7 +141,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         contentPane.add(buttonPanel, BorderLayout.NORTH);
 
         // numCheckpoints doesn't really matter in this context because it is assigned in PixelDrift, we are just drawing.
-        track = new Track("src/data/mediumTrack.txt", 2);
+        track = new Track("src/data/grass.txt", 2);
         trackPanel = new TrackPanel(track, 0);
         contentPane.add(trackPanel, BorderLayout.SOUTH);
         drawingJFrame.pack();
@@ -218,6 +230,10 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
                 currentTileChar = 'F';
             } else if (currentTileButton == checkpointButton) {
                 currentTileChar = 'C';
+            } else if (currentTileButton == barrierButton) {
+                currentTileChar = 'B';
+            } else if (currentTileButton == wallButton) {
+                currentTileChar = 'W';
             } else {
                 currentTileChar = 'G';
             }

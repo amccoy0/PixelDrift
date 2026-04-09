@@ -68,8 +68,21 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Image for starting screen */
     private ImageIcon titleImage;
+
     /** JLabel to add image to for starting screen */
-    private JLabel imageLabel;
+    private JLabel titleLabel;
+
+    /** Image that changes based on what gamemode is selected */
+    private ImageIcon menuGamemodeImage;
+
+    /** JLabel to add gamemode image to menu screen */
+    private JLabel gamemodeImageLabel;
+
+    /** Image to get a preview of the track */
+    private ImageIcon trackImage;
+
+    /** JLabel to add image of track to menu screen */
+    private JLabel trackImageLabel;
 
     /** Container used for drawing the game. */
     private final Container contentPane;
@@ -138,12 +151,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private void startingScreen() {
         // Get starting image and add to contentPane
         titleImage = new ImageIcon("src/data/PixelDrift_Startup.png");
-        imageLabel = new JLabel(titleImage);
-        contentPane.add(imageLabel);
+        titleLabel = new JLabel(titleImage);
+        contentPane.add(titleLabel);
 
         gameJFrame.pack();
         gameJFrame.setLocationRelativeTo(null);
-        imageLabel.addMouseListener(new MouseAdapter() {
+        titleLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Remove all components, revalidate and repaint to update the display
@@ -264,7 +277,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             track.hitCheckpointGroup(carTile.getXPos(), carTile.getYPos());
             checkpointTick(cars[0]);
         // Check if current tile is wall
-        } else if  (surface == Tile.Surface.WALL) {
+        } else if  (surface == Tile.Surface.WALL || surface == Tile.Surface.BARRIER) {
             cars[0].hitWall();
             // Check if current tile is finish
         } else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
@@ -547,7 +560,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             // Initialize tracks
             if (currentTrackButton == easyTrackButton) {
                 // Easy track
-                track = new Track("src/data/track120x100.txt", 2);
+                track = new Track("src/data/easyTrack.txt", 2);
             } else if (currentTrackButton == mediumTrackButton) {
                 // Add medium track when I get it
                 track = new Track("src/data/mediumTrack.txt", 4);

@@ -45,7 +45,9 @@ public class Tile {
         SAND('S', 0.95, 0.78, 5.0, false, Color.YELLOW),
         FINISH('F',0.97, 0.8, 6.0, false, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 6.0, true, Color.BLUE),
+        BARRIER('B', 0.93, 0.75, 3.5, false, Color.PINK),
         WALL('W', 0.93, 0.75, 3.5, false, Color.BLACK);
+
 
 
         public final char tileType;
@@ -96,6 +98,9 @@ public class Tile {
                 break;
             case 'W':
                 surface = Surface.WALL;
+                break;
+            case 'B':
+                surface = Surface.BARRIER;
                 break;
             default:
                 surface = Surface.GRASS;
