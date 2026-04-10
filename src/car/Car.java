@@ -3,6 +3,7 @@ package car;
 import track.Tile;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -155,7 +156,6 @@ public class Car {
      * @param g graphics context used for rendering
      */
     public void draw(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g;
 
         int width = 15;
@@ -164,12 +164,17 @@ public class Car {
         int centerX = (int)xPos + width / 2;
         int centerY = (int)yPos + height / 2;
 
+        AffineTransform original = g2.getTransform();  // save
+
         g2.rotate(angle, centerX, centerY);
 
         if (img == null)
             g2.fillRect((int)xPos, (int)yPos, width, height);
         else
             g2.drawImage(img, (int)xPos, (int)yPos, null);
+
+        // Restore the original transform so subsequent cars are not drawn with this car's rotation applied
+        g2.setTransform(original);
     }
 
     // --------------------
