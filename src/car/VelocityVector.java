@@ -1,3 +1,4 @@
+package car;
 /**
  * File name: VelocityVector.java
  *
@@ -6,10 +7,6 @@
  * Stores x and y components and provides basic vector operations
  * such as addition, scaling, magnitude, and limiting speed.
  */
-
-package car;
-
-
 public class VelocityVector {
 
     /** X component of the vector. */
@@ -91,9 +88,9 @@ public class VelocityVector {
     }
 
     /**
-     * Returns the direction of the vector in radians.
+     * Returns the direction (angle) of the vector in radians.
      *
-     * @return angle of the vector
+     * @return angle of the vector in radians
      */
     public double getAngle() {
         return Math.atan2(yComp, xComp);
@@ -101,7 +98,8 @@ public class VelocityVector {
 
     /**
      * Limits the magnitude of the vector to a maximum value.
-     * If the vector exceeds the maximum speed, it is scaled down.
+     * If the vector exceeds the maximum speed, it is scaled down
+     * while preserving direction.
      *
      * @param max maximum allowed magnitude
      */
@@ -113,9 +111,10 @@ public class VelocityVector {
     }
 
     /**
-     * Sets the x and y comps based on the angle
+     * Rotates the vector to a specified angle while preserving magnitude.
+     * This is useful for aligning velocity with a new direction.
      *
-     * @param angle
+     * @param angle new direction in radians
      */
     public void rotateTo(double angle){
         double mag = getMagnitude();

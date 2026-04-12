@@ -101,7 +101,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Track the car's location */
     private int[] carPos;
-    private Tile carTile;
+    private Tile carTile1;
     private Tile.Surface carSurface;
 
 
@@ -277,7 +277,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             // Incremement checkpoint count and start checkpoint cooldown
             cars[0].incrementCheckpointCount();
             cars[0].setCheckpointCooldown(false);
-            track.hitCheckpointGroup(carTile.getXPos(), carTile.getYPos());
+            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
             checkpointTick(cars[0]);
         // Check if current tile is wall
         } else if  (surface == Tile.Surface.WALL || surface == Tile.Surface.BARRIER) {
@@ -481,7 +481,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (right) cars[0].turn(0.05);
 
         int[] carPos1 = cars[0].getPos();
-        Tile carTile1 = carPosToTile(carPos1);
+        carTile1 = carPosToTile(carPos1);
         Tile.Surface surface1 = carTile1.getSurface();
 
         // Time trial logic (only for single player)
