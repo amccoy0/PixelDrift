@@ -54,18 +54,30 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Button Group for track JRadioButtons */
     private ButtonGroup trackButtonGroup;
+
     /** Button Group for gamemode JRadioButtons */
     private ButtonGroup gamemodeButtonGroup;
 
+    /** Boolean for whether player1 and player2 have finished all the laps of the race */
     private boolean player1Finished, player2Finished;
 
     /** JPanels for gamemode JRadioButtons */
     private JPanel gamemodeButtonPanel;
+
     /** JPanels for track JRadioButtons */
     private JPanel trackButtonPanel;
 
-    /** Play Button for menu to start game, has action listener*/
+    /** Play Button for menu to start game, has action listener */
     private JButton playButton;
+
+    /** This button on the menu will load an information pane of how to play */
+    private JButton howToPlayButton;
+
+    /** This button will be on the menu and will quit the game */
+    private JButton quitButton;
+
+    /** This button will be on the how to play screen and will load the user back into the menu */
+    private JButton menuButton;
 
     /** Image for starting screen */
     private ImageIcon titleImage;
@@ -97,10 +109,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Container used for drawing the game. */
     private final Container contentPane;
 
-    // Player 1 controls
+    /** Player 1 controls */
     private boolean up, down, left, right, drift;
 
-    // Player 2 controls
+    /** Player 2 controls */
     private boolean up2, down2, left2, right2, drift2;
 
     /** Timer used to repeatedly update the game. */
@@ -110,13 +122,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private Car[] cars;
 
     /** Track the car's location */
-    private int[] carPos;
-    private Tile carTile1;
-    private Tile.Surface carSurface;
+    private Tile carTile1, carTile2;
 
+    /** Track the car's current Tile's surface */
+    private Tile.Surface surface1, surface2;
 
     /** Used to store track data */
     private Track track;
+
     /** Used to draw track and cars */
     private TrackPanel trackPanel;
 
@@ -125,8 +138,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
     /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
-
-
 
     /**
      * Constructor
@@ -150,6 +161,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         startingScreen();
     }
 
+    /**
+     * Main so we can run the game which calls the PixelDriftGUI constructor
+     *
+     * @param args, the code being run
+     */
     public static void main(String[] args) {
         new PixelDriftGUI();
     }
@@ -210,7 +226,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         // Initialize gamemode image panel and image as well
         gamemodeImagePanel = new JPanel();
-        menuGamemodeImage = new ImageIcon("src/data/testCar.png");
+        menuGamemodeImage = new ImageIcon("src/data/timeTrialImage.png");
         gamemodeImageLabel = new JLabel(menuGamemodeImage);
         gamemodeImagePanel.add(gamemodeImageLabel, BorderLayout.CENTER);
 
@@ -517,7 +533,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         int[] carPos1 = cars[0].getPos();
         carTile1 = carPosToTile(carPos1);
-        Tile.Surface surface1 = carTile1.getSurface();
+        surface1 = carTile1.getSurface();
 
         // Time trial logic (only for single player)
         if (cars.length == 1) {
@@ -541,8 +557,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             if (right2) cars[1].turn(0.05);
 
             int[] carPos2 = cars[1].getPos();
-            Tile carTile2 = carPosToTile(carPos2);
-            Tile.Surface surface2 = carTile2.getSurface();
+            carTile2 = carPosToTile(carPos2);
+            surface2 = carTile2.getSurface();
 
             cars[1].setGrip(surface2.grip);
             cars[1].setAccelerationMultiplier(surface2.accelMultiplier);
@@ -620,34 +636,58 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     }
 
     /**
-     * Required method from KeyListener.
-     * Not used in this implementation yet but will be used in starting screen
+     * Required method, not implemented
      *
      * @param e key event
      */
     @Override
     public void keyTyped(KeyEvent e) {}
 
+    /**
+     * Required method, not implemented
+     *
+     * @param e key event
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
 
     }
 
+    /**
+     * Required method, not implemented
+     *
+     * @param e key event
+     */
     @Override
     public void mousePressed(MouseEvent e) {
 
     }
 
+    /**
+     * Required method, not implemented
+     *
+     * @param e key event
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
 
     }
 
+    /**
+     * Required method, not implemented
+     *
+     * @param e key event
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
 
     }
 
+    /**
+     * Required method, not implemented
+     *
+     * @param e key event
+     */
     @Override
     public void mouseExited(MouseEvent e) {
 
@@ -670,9 +710,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
                     // Swap gamemode image
                     if (currentGamemodeButton == timeTrialButton) {
-                        //menuGamemodeImage = new ImageIcon("src/data/timeTrialImage.png");
+                        menuGamemodeImage = new ImageIcon("src/data/timeTrialImage.png");
                     } else if (currentGamemodeButton == twoPlayerButton) {
-                        //menuGamemodeImage = new ImageIcon("src/data/twoPlayerImage.png");
+                        menuGamemodeImage = new ImageIcon("src/data/twoPlayerImage.png");
                     }
                     gamemodeImageLabel.setIcon(menuGamemodeImage);
                     gamemodeImagePanel.repaint();
