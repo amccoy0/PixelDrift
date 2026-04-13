@@ -22,7 +22,7 @@ import java.util.TimerTask;
 public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListener, ActionListener, ItemListener {
 
     /** Time between game updates in milliseconds. */
-    public static final int TIME_TO_UPDATE = 30;
+    public static final int TIME_TO_UPDATE = 10;
 
     /** Countdown time for the race to start */
     private static final int COUNTDOWN = 3;
