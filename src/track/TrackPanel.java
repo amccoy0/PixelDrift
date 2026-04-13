@@ -87,6 +87,7 @@ public class TrackPanel extends JPanel {
         for (int i = 0; i < numCars; i++) {
             if (cars[i] == null) {
                 this.cars[i] = car;
+                break;
             }
         }
     }

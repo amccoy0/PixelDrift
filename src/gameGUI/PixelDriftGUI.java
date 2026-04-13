@@ -56,7 +56,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Button Group for gamemode JRadioButtons */
     private ButtonGroup gamemodeButtonGroup;
 
-
+    private boolean player1Finished, player2Finished;
 
     /** JPanels for gamemode JRadioButtons */
     private JPanel gamemodeButtonPanel;
@@ -87,18 +87,21 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Container used for drawing the game. */
     private final Container contentPane;
 
-    /** Movement control flags based on key presses. */
+    // Player 1 controls
     private boolean up, down, left, right, drift;
 
+    // Player 2 controls
+    private boolean up2, down2, left2, right2, drift2;
+
     /** Timer used to repeatedly update the game. */
-    private final java.util.Timer gameTimer = new Timer();
+    private java.util.Timer gameTimer = new Timer();
 
     /** The car objects being controlled in the game. */
     private Car[] cars;
 
     /** Track the car's location */
     private int[] carPos;
-    private Tile carTile;
+    private Tile carTile1;
     private Tile.Surface carSurface;
 
 
@@ -274,7 +277,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             // Incremement checkpoint count and start checkpoint cooldown
             cars[0].incrementCheckpointCount();
             cars[0].setCheckpointCooldown(false);
-            track.hitCheckpointGroup(carTile.getXPos(), carTile.getYPos());
+            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
             checkpointTick(cars[0]);
         // Check if current tile is wall
         } else if  (surface == Tile.Surface.WALL || surface == Tile.Surface.BARRIER) {
@@ -345,11 +348,64 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /**
      * This method will handle 2 player game logic
      */
-    private void twoPlayer() {
-        gameRunning = true;
-        gameJFrame.requestFocusInWindow();
-        // Schedule repeated updates
-        gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+    private void twoPlayer(Tile.Surface surface1, Tile.Surface surface2) {
+        // Player 1 checkpoint
+        if (surface1 == Tile.Surface.CHECKPOINT && cars[0].getCheckpointCooldown()) {
+            cars[0].incrementCheckpointCount();
+            cars[0].setCheckpointCooldown(false);
+            checkpointTick(cars[0]);
+        } else if (surface1 == Tile.Surface.WALL || surface1 == Tile.Surface.BARRIER) {
+            cars[0].hitWall();
+        } else if (surface1 == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
+            cars[0].incrementLap();
+            cars[0].resetCheckpointCount();
+            if (cars[0].getLap() >= MAX_LAPS) {
+                if(player2Finished) { endTwoPlayer(); };
+
+            }
+        }
+
+        // Player 2 checkpoint
+        if (surface2 == Tile.Surface.CHECKPOINT && cars[1].getCheckpointCooldown()) {
+            cars[1].incrementCheckpointCount();
+            cars[1].setCheckpointCooldown(false);
+            checkpointTick(cars[1]);
+        } else if (surface2 == Tile.Surface.WALL || surface2 == Tile.Surface.BARRIER) {
+            cars[1].hitWall();
+        } else if (surface2 == Tile.Surface.FINISH && cars[1].getCheckPointCount() >= track.getNumCheckpoints()) {
+            cars[1].incrementLap();
+            cars[1].resetCheckpointCount();
+            if (cars[1].getLap() >= MAX_LAPS) {
+                if(player1Finished) { endTwoPlayer(); }
+            }
+        }
+    }
+
+    private void endTwoPlayer() {
+        gameRunning = false;
+        String winner;
+        if (cars[0].getRaceTime() < cars[1].getRaceTime()) {
+            winner = "Player 1 wins!";
+        } else if (cars[1].getRaceTime() < cars[0].getRaceTime()) {
+            winner = "Player 2 wins!";
+        } else {
+            winner = "It's a tie!";
+        }
+        JOptionPane.showMessageDialog(null, winner + "\nP1: " + cars[0].getRaceTime() + "s  P2: " + cars[1].getRaceTime() + "s");
+        int selection = JOptionPane.showConfirmDialog(null, "Play again?", "Play Again?", JOptionPane.YES_NO_OPTION);
+        if (selection == JOptionPane.YES_OPTION) {
+            contentPane.removeAll();
+            contentPane.revalidate();
+            contentPane.repaint();
+            // re-trigger actionPerformed logic by re-calling play setup
+            actionPerformed(new ActionEvent(playButton, ActionEvent.ACTION_PERFORMED, ""));
+        } else {
+            gameTimer.cancel();
+            contentPane.removeAll();
+            contentPane.revalidate();
+            contentPane.repaint();
+            menuScreen();
+        }
     }
 
     /**
@@ -376,6 +432,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 for (Car car : cars){
                     car.startTimer();
                 }
+                gameTimer = new java.util.Timer();
                 gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
 
             }
@@ -412,30 +469,54 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void run() {
 
-
         if (!gameRunning) return;
+        // Update title
         gameJFrame.setTitle("Time: " + cars[0].getCurrentTime());
-        for (Car car: cars) {
-            car.setDrift(drift);
-            if (up) car.accelerate(0.2);
-            if (down) car.accelerate(-0.2);
-            if (left) car.turn(-0.05);
-            if (right) car.turn(0.05);
 
-            carPos = car.getPos();
-            carTile = carPosToTile(carPos);
-            carSurface = carTile.getSurface();
-            // Call Time trial for tile checking
-            timeTrial(carSurface);
+        // ---------- PLAYER 1 ----------
+        cars[0].setDrift(drift);
+        if (up) cars[0].accelerate(0.2);
+        if (down) cars[0].accelerate(-0.2);
+        if (left) cars[0].turn(-0.05);
+        if (right) cars[0].turn(0.05);
 
-            car.setGrip(carSurface.grip);
-            car.setAccelerationMultiplier(carSurface.accelMultiplier);
-            car.setMaxSpeed(carSurface.maxSpeed);
-            car.setDrift(drift);
+        int[] carPos1 = cars[0].getPos();
+        carTile1 = carPosToTile(carPos1);
+        Tile.Surface surface1 = carTile1.getSurface();
 
-
-            car.move();
+        // Time trial logic (only for single player)
+        if (cars.length == 1) {
+            timeTrial(surface1);
         }
+
+        cars[0].setGrip(surface1.grip);
+        cars[0].setAccelerationMultiplier(surface1.accelMultiplier);
+        cars[0].setMaxSpeed(surface1.maxSpeed);
+
+        cars[0].move();
+
+
+        // ---------- PLAYER 2 ----------
+        if (cars.length > 1) {
+
+            cars[1].setDrift(drift2);
+            if (up2) cars[1].accelerate(0.2);
+            if (down2) cars[1].accelerate(-0.2);
+            if (left2) cars[1].turn(-0.05);
+            if (right2) cars[1].turn(0.05);
+
+            int[] carPos2 = cars[1].getPos();
+            Tile carTile2 = carPosToTile(carPos2);
+            Tile.Surface surface2 = carTile2.getSurface();
+
+            cars[1].setGrip(surface2.grip);
+            cars[1].setAccelerationMultiplier(surface2.accelMultiplier);
+            cars[1].setMaxSpeed(surface2.maxSpeed);
+            twoPlayer(surface1, surface2);
+
+            cars[1].move();
+        }
+
         trackPanel.repaint();
     }
 
@@ -451,8 +532,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
+
+            // Player 1
             case KeyEvent.VK_W -> {
-                // Only start countdown if the game is not running
                 if (!gameRunning && startGame) {
                     startCountdown();
                 } else if (gameRunning){
@@ -463,6 +545,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_A -> left = true;
             case KeyEvent.VK_D -> right = true;
             case KeyEvent.VK_SPACE -> drift = true;
+
+            // Player 2
+            case KeyEvent.VK_UP -> up2 = true;
+            case KeyEvent.VK_DOWN -> down2 = true;
+            case KeyEvent.VK_LEFT -> left2 = true;
+            case KeyEvent.VK_RIGHT -> right2 = true;
+            case KeyEvent.VK_SHIFT -> drift2 = true;
         }
     }
 
@@ -478,11 +567,20 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
+
+            // Player 1
             case KeyEvent.VK_W -> up = false;
             case KeyEvent.VK_S -> down = false;
             case KeyEvent.VK_A -> left = false;
             case KeyEvent.VK_D -> right = false;
             case KeyEvent.VK_SPACE -> drift = false;
+
+            // Player 2
+            case KeyEvent.VK_UP -> up2 = false;
+            case KeyEvent.VK_DOWN -> down2 = false;
+            case KeyEvent.VK_LEFT -> left2 = false;
+            case KeyEvent.VK_RIGHT -> right2 = false;
+            case KeyEvent.VK_SHIFT -> drift2 = false;
         }
     }
 
@@ -579,7 +677,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
                 cars[0] = new Car(100, 100, "testCar.png");
-                cars[1] = new Car(50, 100, "testCar.png");
+                cars[1] = new Car(50, 50, "testCar.png");
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
@@ -588,9 +686,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 gameJFrame.pack();
                 gameJFrame.revalidate();
                 trackPanel.repaint();
+                trackPanel.requestFocusInWindow();
 
+                gameJFrame.setTitle("Two Player: Press W to Start Countdown");  // prompt player
                 gameJFrame.setVisible(true);
-
+                trackPanel.addKeyListener(this);
+                startGame = true;  //allow countdown to begin
             }
         }
     }

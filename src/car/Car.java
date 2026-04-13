@@ -3,6 +3,7 @@ package car;
 import track.Tile;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -155,7 +156,6 @@ public class Car {
      * @param g graphics context used for rendering
      */
     public void draw(Graphics g) {
-
         Graphics2D g2 = (Graphics2D) g;
 
         int width = 15;
@@ -164,12 +164,17 @@ public class Car {
         int centerX = (int)xPos + width / 2;
         int centerY = (int)yPos + height / 2;
 
+        AffineTransform original = g2.getTransform();  // save
+
         g2.rotate(angle, centerX, centerY);
 
         if (img == null)
             g2.fillRect((int)xPos, (int)yPos, width, height);
         else
             g2.drawImage(img, (int)xPos, (int)yPos, null);
+
+        // Restore the original transform so subsequent cars are not drawn with this car's rotation applied
+        g2.setTransform(original);
     }
 
     // --------------------
@@ -205,86 +210,172 @@ public class Car {
 
 
     /**
-     * Scales friction
+     * Applies drag to the car's velocity.
+     * This simulates friction and gradually slows the car.
      */
     private void drag(){
         velocity.scale(dragConstant);
     }
 
 
-    // Getters/Setters for lap + lastTile + checkPointCount
+    /**
+     * Sets the current lap count.
+     *
+     * @param lap lap number
+     */
     public void setLap(int lap) {
         this.lap = lap;
     }
 
+    /**
+     * Returns the current lap count.
+     *
+     * @return lap number
+     */
     public int getLap() {
         return lap;
     }
 
+    /**
+     * Increments the lap counter by one.
+     */
     public void incrementLap() {
         lap += 1;
     }
 
+    /**
+     * Resets the lap counter to zero.
+     */
     public void resetLap() {
         lap = 0;
     }
 
+    /**
+     * Returns number of checkpoints crossed.
+     *
+     * @return checkpoint count
+     */
     public int getCheckPointCount() {
         return checkPointCount;
     }
 
+    /**
+     * Increments checkpoint counter.
+     */
     public void incrementCheckpointCount() {
         checkPointCount += 1;
     }
 
+    /**
+     * Resets checkpoint counter.
+     */
     public void resetCheckpointCount() {
         checkPointCount = 0;
     }
 
+    /**
+     * Sets the last tile the car touched.
+     *
+     * @param tile tile object
+     */
     public void setLastTile(Tile tile) {
         lastTile = tile;
     }
 
+    /**
+     * Returns the last tile the car touched.
+     *
+     * @return tile object
+     */
     public Tile getLastTile() {
         return lastTile;
     }
 
+    /**
+     * Returns current position of car.
+     *
+     * @return array containing x and y position
+     */
     public int[] getPos(){
         return new int[]{(int)xPos,(int)yPos};
     }
 
+    /**
+     * Sets the grip value of the car.
+     *
+     * @param amount grip value
+     */
     public void setGrip(double amount){ grip = amount;}
 
+    /**
+     * Sets acceleration multiplier.
+     *
+     * @param amount acceleration multiplier
+     */
     public void setAccelerationMultiplier(double amount){ accelerationMultiplier = amount;}
 
+    /**
+     * Sets maximum speed of the car.
+     *
+     * @param amount max speed
+     */
     public void setMaxSpeed(double amount){ maxSpeed = amount;}
 
+    /**
+     * Returns checkpoint cooldown state.
+     *
+     * @return true if cooldown active
+     */
     public boolean getCheckpointCooldown() {
         return checkpointCooldown;
     }
 
+    /**
+     * Sets checkpoint cooldown.
+     *
+     * @param a cooldown state
+     */
     public void setCheckpointCooldown(boolean a) {
         checkpointCooldown = a;
     }
 
+    /**
+     * Starts race timer.
+     */
     public void startTimer(){
         startTime = System.currentTimeMillis();
     }
 
+    /**
+     * Stops race timer and records race time.
+     */
     public void stopTimer(){
         endTime = System.currentTimeMillis();
         raceTime = endTime-startTime;
         raceTime/=1000;
     }
 
+    /**
+     * Returns current elapsed race time.
+     *
+     * @return time in seconds
+     */
     public double getCurrentTime(){
         return (System.currentTimeMillis() - startTime)/1000;
     }
 
+    /**
+     * Returns total race time.
+     *
+     * @return race time in seconds
+     */
     public double getRaceTime(){
         return raceTime;
     }
 
+    /**
+     * Handles collision with a wall using automatic normal detection.
+     */
     public void hitWall() {
 
         // move back outside wall
@@ -313,6 +404,12 @@ public class Car {
         velocity.add(normalX * 0.05, normalY * 0.05);
     }
 
+    /**
+     * Reflects the car velocity using the provided wall normal.
+     *
+     * @param normalX x component of wall normal
+     * @param normalY y component of wall normal
+     */
     public void hitWall(double normalX, double normalY) {
         double length = Math.sqrt(normalX * normalX + normalY * normalY);
         normalX /= length;
@@ -328,8 +425,5 @@ public class Car {
 
         // dampen slightly so it doesn't feel rubbery
         velocity.scale(0.8);
-
     }
-
-
 }
