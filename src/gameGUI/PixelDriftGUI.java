@@ -6,6 +6,7 @@ import track.Track;
 import track.TrackPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -78,11 +79,20 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** JLabel to add gamemode image to menu screen */
     private JLabel gamemodeImageLabel;
 
+    /** JPanel for the gamemode preview image */
+    private JPanel gamemodeImagePanel;
+
     /** Image to get a preview of the track */
     private ImageIcon trackImage;
 
     /** JLabel to add image of track to menu screen */
     private JLabel trackImageLabel;
+
+    /** JPanel for the track preview image */
+    private JPanel trackImagePanel;
+
+    /** JPanel for the menu */
+    private JPanel menuPanel;
 
     /** Container used for drawing the game. */
     private final Container contentPane;
@@ -198,6 +208,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         // Initialize gamemode panel
         gamemodeButtonPanel = new JPanel(new GridLayout(2, 1, 0, 5));
 
+        // Initialize gamemode image panel and image as well
+        gamemodeImagePanel = new JPanel();
+        menuGamemodeImage = new ImageIcon("src/data/testCar.png");
+        gamemodeImageLabel = new JLabel(menuGamemodeImage);
+        gamemodeImagePanel.add(gamemodeImageLabel, BorderLayout.CENTER);
+
         for (JRadioButton button: gamemodeSelection) {
             gamemodeButtonGroup.add(button);
         }
@@ -230,6 +246,12 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         // Initialize track panel
         trackButtonPanel = new JPanel(new GridLayout(3, 1, 0, 5));
 
+        // Initialize track image panel as well
+        trackImagePanel = new JPanel();
+        trackImage = new ImageIcon("src/data/easyTrackImage.png");
+        trackImageLabel = new JLabel(trackImage);
+        trackImagePanel.add(trackImageLabel, BorderLayout.CENTER);
+
         for (JRadioButton button: trackDifficulty) {
             trackButtonGroup.add(button);
         }
@@ -245,17 +267,30 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         // Resize JFrame
         gameJFrame.setTitle("Pixel Drift Menu");
-        gameJFrame.setSize(400, 300);
+
 
         // Set background to break-up panels
         gamemodeButtonPanel.setBackground(Color.LIGHT_GRAY);
         trackButtonPanel.setBackground(Color.LIGHT_GRAY);
 
-        // Add panels to contentPane
-        contentPane.add(gamemodeButtonPanel, BorderLayout.NORTH);
-        contentPane.add(trackButtonPanel, BorderLayout.CENTER);
+        // create a temporary box layout panel
+        menuPanel = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+
+        gamemodeButtonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        gamemodeImagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        trackButtonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        trackImagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        menuPanel.add(gamemodeButtonPanel);
+        menuPanel.add(gamemodeImagePanel);
+        menuPanel.add(trackButtonPanel);
+        menuPanel.add(trackImagePanel);
+
+        contentPane.add(menuPanel, BorderLayout.CENTER);
         contentPane.add(playButton, BorderLayout.SOUTH);
 
+        gameJFrame.pack();
         gameJFrame.setLocationRelativeTo(null);
         gameJFrame.setVisible(true);
 
@@ -632,11 +667,31 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             for (JRadioButton gamemodeButton: gamemodeSelection) {
                 if (e.getSource() == gamemodeButton) {
                     currentGamemodeButton = gamemodeButton;
+
+                    // Swap gamemode image
+                    if (currentGamemodeButton == timeTrialButton) {
+                        //menuGamemodeImage = new ImageIcon("src/data/timeTrialImage.png");
+                    } else if (currentGamemodeButton == twoPlayerButton) {
+                        //menuGamemodeImage = new ImageIcon("src/data/twoPlayerImage.png");
+                    }
+                    gamemodeImageLabel.setIcon(menuGamemodeImage);
+                    gamemodeImagePanel.repaint();
                 }
             }
             for (JRadioButton trackButton: trackDifficulty) {
                 if (e.getSource() == trackButton) {
                     currentTrackButton =  trackButton;
+
+                    // Swap track image
+                    if (currentTrackButton == easyTrackButton) {
+                        trackImage = new ImageIcon("src/data/easyTrackImage.png");
+                    } else if (currentTrackButton == mediumTrackButton) {
+                        trackImage = new ImageIcon("src/data/mediumTrackImage.png");
+                    } else if (currentTrackButton == hardTrackButton) {
+                        trackImage = new ImageIcon("src/data/hardTrackImage.png");
+                    }
+                    trackImageLabel.setIcon(trackImage);
+                    trackImagePanel.repaint();
                 }
             }
         }
