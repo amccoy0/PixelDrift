@@ -27,7 +27,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private static final int COUNTDOWN = 3;
 
     /** Number of laps required to finish */
-    private static final int MAX_LAPS = 1;
+    private static final int MAX_LAPS = 2;
 
     /** Main game window. */
     private final JFrame gameJFrame;
@@ -288,6 +288,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Stop timer and game
                 gameRunning = false;
                 cars[0].stopTimer();
+
                 // Display in message and ask if they want to go to the menu or play again
                 JOptionPane.showMessageDialog(null, "You finished the track in: " +cars[0].getRaceTime() + " seconds!" );
                 int selection = JOptionPane.showConfirmDialog(null,"Choose one",
@@ -299,7 +300,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 } else {
                     // Go to menu
                     gameRunning = false;
-                    gameTimer.cancel();
+
                     // Erase contents
                     contentPane.removeAll();
                     contentPane.revalidate();
@@ -413,7 +414,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
 
         if (!gameRunning) return;
-        gameJFrame.setTitle("Time: "+cars[0].getCurrentTime());
+        gameJFrame.setTitle("Time: " + cars[0].getCurrentTime());
         for (Car car: cars) {
             car.setDrift(drift);
             if (up) car.accelerate(0.2);

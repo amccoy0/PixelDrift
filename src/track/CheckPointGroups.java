@@ -27,7 +27,7 @@ public class CheckPointGroups {
     private int checkpointNum;
 
     /** Maps each checkpoint Tile to its connected group number */
-    private Map<Tile, Integer> checkpoints = new HashMap<>();
+    private final Map<Tile, Integer> checkpoints = new HashMap<>();
 
     /** The track we are creating checkpoint groups for, used for tile lookups */
     private final Track track;
