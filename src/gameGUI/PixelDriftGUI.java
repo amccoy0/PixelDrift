@@ -139,6 +139,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
 
+    private final double ACCELL_AMOUNT = 0.067;
+
+    private final double TURN_AMOUNT = 0.0167;
+
+
     /**
      * Constructor
      */
@@ -526,10 +531,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         // ---------- PLAYER 1 ----------
         cars[0].setDrift(drift);
-        if (up) cars[0].accelerate(0.2);
-        if (down) cars[0].accelerate(-0.2);
-        if (left) cars[0].turn(-0.05);
-        if (right) cars[0].turn(0.05);
+        if (up) cars[0].accelerate(ACCELL_AMOUNT);
+        if (down) cars[0].accelerate(-ACCELL_AMOUNT);
+        if (left) cars[0].turn(-TURN_AMOUNT);
+        if (right) cars[0].turn(TURN_AMOUNT);
 
         int[] carPos1 = cars[0].getPos();
         carTile1 = carPosToTile(carPos1);
@@ -551,10 +556,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         if (cars.length > 1) {
 
             cars[1].setDrift(drift2);
-            if (up2) cars[1].accelerate(0.2);
-            if (down2) cars[1].accelerate(-0.2);
-            if (left2) cars[1].turn(-0.05);
-            if (right2) cars[1].turn(0.05);
+            if (up2) cars[1].accelerate(ACCELL_AMOUNT);
+            if (down2) cars[1].accelerate(-ACCELL_AMOUNT);
+            if (left2) cars[1].turn(-TURN_AMOUNT);
+            if (right2) cars[1].turn(TURN_AMOUNT);
 
             int[] carPos2 = cars[1].getPos();
             carTile2 = carPosToTile(carPos2);
