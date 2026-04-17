@@ -57,7 +57,7 @@ public class Car {
     private double prevX;
     private double prevY;
 
-    private double bounceAngle;
+    private boolean canAccelerate = true;
 
 
     /**
@@ -88,10 +88,12 @@ public class Car {
      * @param force amount of acceleration applied to the velocity vector
      */
     public void accelerate(double force) {
-        force *= accelerationMultiplier;
-        double xForce = Math.cos(angle) * force;
-        double yForce = Math.sin(angle) * force;
-        velocity.add(xForce, yForce);
+        if (canAccelerate) {
+            force *= accelerationMultiplier;
+            double xForce = Math.cos(angle) * force;
+            double yForce = Math.sin(angle) * force;
+            velocity.add(xForce, yForce);
+        }
     }
 
     /**
@@ -377,7 +379,7 @@ public class Car {
      * Handles collision with a wall using automatic normal detection.
      */
     public void hitWall() {
-
+        canAccelerate = false;
         // move back outside wall
         xPos = prevX;
         yPos = prevY;
@@ -402,6 +404,7 @@ public class Car {
 
         // optional tiny push to prevent sticking
         velocity.add(normalX * 0.05, normalY * 0.05);
+        canAccelerate = true;
     }
 
     /**
