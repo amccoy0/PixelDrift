@@ -151,6 +151,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
 
+    private JPanel infoPanel;
+    private JLabel timerLabel;
+    private JLabel lapLabel;
+    private JLabel modeLabel;
+
     private final double ACCELL_AMOUNT = 0.067;
 
     private final double TURN_AMOUNT = 0.0167;
@@ -439,7 +444,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
-        gameJFrame.add(trackPanel);
+        gameJFrame.add(trackPanel, BorderLayout.CENTER);
+        createInfoPanel();
         gameJFrame.pack();
         gameJFrame.revalidate();
         trackPanel.repaint();
@@ -554,9 +560,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
             }
         });
-
+        gameJFrame.setTitle("PixelDrift");
         timer.setInitialDelay(0);
         timer.start();
+
     }
 
     /**
@@ -604,8 +611,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     public void run() {
 
         if (!gameRunning) return;
-        // Update title
-        gameJFrame.setTitle("Time: " + cars[0].getCurrentTime());
+        // Update
+        if (timerLabel != null) {
+            timerLabel.setText("Time: " + cars[0].getCurrentTime());
+            lapLabel.setText("Lap: " + cars[0].getLap() + "/" + MAX_LAPS);
+        }
 
         // ---------- PLAYER 1 ----------
         cars[0].setDrift(drift);
@@ -628,7 +638,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         cars[0].setMaxSpeed(surface1.maxSpeed);
 
         cars[0].move();
-
 
         // ---------- PLAYER 2 ----------
         if (cars.length > 1) {
@@ -707,14 +716,29 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_S -> down = false;
             case KeyEvent.VK_A -> left = false;
             case KeyEvent.VK_D -> right = false;
-            case KeyEvent.VK_SPACE -> drift = false;
+
 
             // Player 2
             case KeyEvent.VK_UP -> up2 = false;
             case KeyEvent.VK_DOWN -> down2 = false;
             case KeyEvent.VK_LEFT -> left2 = false;
             case KeyEvent.VK_RIGHT -> right2 = false;
-            case KeyEvent.VK_SHIFT -> drift2 = false;
+
+            case KeyEvent.VK_SPACE -> {
+                if (cars.length > 1) {
+                    drift2 = false;
+                } else {
+                    drift = false;
+                }
+            }
+
+            case KeyEvent.VK_SHIFT -> {
+                if (cars.length > 1) {
+                    drift = false;
+                } else {
+                    drift2 = false;
+                }
+            }
         }
     }
 
@@ -860,7 +884,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel.setCar(cars[1]);
 
                 // Add trackPanel to gameJFrame
-                gameJFrame.add(trackPanel);
+                gameJFrame.add(trackPanel, BorderLayout.CENTER);
+                createInfoPanel();
                 gameJFrame.pack();
                 gameJFrame.revalidate();
                 trackPanel.repaint();
@@ -880,5 +905,32 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         } else if (e.getSource() == menuButton) {
             menuScreen();
         }
+    }
+
+    /**
+     * This method is used to create the info panel on the right side of the screen.
+     */
+    private void createInfoPanel() {
+        infoPanel = new JPanel();
+        infoPanel.setPreferredSize(new Dimension(200, 0));
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(Color.DARK_GRAY);
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+
+        timerLabel = new JLabel("Time: 0");
+        lapLabel = new JLabel("Lap: 0/" + MAX_LAPS);
+        modeLabel = new JLabel("Mode: " + currentGamemodeButton.getText());
+
+        timerLabel.setForeground(Color.WHITE);
+        lapLabel.setForeground(Color.WHITE);
+        modeLabel.setForeground(Color.WHITE);
+
+        infoPanel.add(timerLabel);
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(lapLabel);
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(modeLabel);
+
+        contentPane.add(infoPanel, BorderLayout.EAST);
     }
 }
