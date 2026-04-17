@@ -212,4 +212,17 @@ public class CheckPointGroups {
         }
     }
 
+    /**
+     * Resets the checkpoint tiles in a specific group
+     *
+     * @param groupNum the corresponding group to be reset
+     */
+    public void resetSpecificGroup(int groupNum) {
+        for (Tile tile: checkpoints.keySet()) {
+            if (checkpoints.get(tile) == groupNum) {
+                tile.setHitCheckpoint(false);
+            }
+        }
+    }
+
 }

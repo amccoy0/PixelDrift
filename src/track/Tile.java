@@ -34,6 +34,7 @@ public class Tile {
     /** This is the Color of the checkPoint when it has been hit by a car */
     private Color checkPointHitColor;
 
+    /** This is a boolean for if the checkpoint is hit or not, changes color based on boolean value */
     private boolean hitCheckpoint;
 
     /**
@@ -140,17 +141,33 @@ public class Tile {
         return tileColor;
     }
 
+    /**
+     * Setter for if the checkpoint is hit or not yet, used to change color based on this boolean value
+     *
+     * @param b boolean true if hit, false otherwise
+     */
     public void setHitCheckpoint(boolean b) {
         hitCheckpoint = b;
     }
 
+    /**
+     * Get the X position of the Tile in the track
+     *
+     * @return
+     */
     public int getXPos() {
         return xPos;
     }
 
+    /**
+     * Get the Y position of the Tile in the track
+     *
+     * @return int yPos, Y position of the Tile in the track
+     */
     public int getYPos() {
         return yPos;
     }
+
 
     /**
      * Getter for Surface enumeration of tile
@@ -161,10 +178,19 @@ public class Tile {
         return surface;
     }
 
+    /**
+     * Getter for the Tile's tileType
+     * @return char tileType, char representing the tile in file
+     */
     public char getTileType() {
         return tileType;
     }
 
+    /**
+     * Getter for is this Tile a checkpoint, used in checkpointGroups
+     *
+     * @return boolean true if checkpoint, false otherwise
+     */
     public boolean isCheckpoint() {
         return surface.checkpoint;
     }
@@ -174,7 +200,7 @@ public class Tile {
      *
      * @return TILE_SIZE the size of the tile # x #
      */
-    static int getTileSize() {
+    public static int getTileSize() {
         return TILE_SIZE;
     }
 }

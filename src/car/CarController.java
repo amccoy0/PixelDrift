@@ -19,7 +19,7 @@ import java.util.TimerTask;
 public class CarController extends TimerTask implements KeyListener {
 
     /** Time between game updates in milliseconds. */
-    public static final int TIME_TO_UPDATE = 30;
+    public static final int TIME_TO_UPDATE = 10;
 
     /** Main game window. */
     private final JFrame gameJFrame;
@@ -69,7 +69,7 @@ public class CarController extends TimerTask implements KeyListener {
         contentPane.setLayout(null);
 
         // Create a car
-        car = new Car(100, 100, "testCar.jpg");
+        car = new Car(100, 100, "src/data/testCar.png");
 
         gameJFrame.addKeyListener(this);
         gameJFrame.setVisible(true);

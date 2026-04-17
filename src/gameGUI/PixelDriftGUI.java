@@ -73,8 +73,20 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** This button on the menu will load an information pane of how to play */
     private JButton howToPlayButton;
 
+    /** This is the Image Icon for the keybindings to play the game*/
+    private ImageIcon controlsImage;
+
+    /** This is the controls JLabel to put the image icon into */
+    private JLabel controlsLabel;
+
+    /** This is the JPanel to put the controls JLbabel into */
+    private JPanel controlsPanel;
+
+    /** This is the JPanel for all of the Exit, Menu, StartGame, HowToPlay buttons */
+    private JPanel menuButtonPanel;
+
     /** This button will be on the menu and will quit the game */
-    private JButton quitButton;
+    private JButton exitButton;
 
     /** This button will be on the how to play screen and will load the user back into the menu */
     private JButton menuButton;
@@ -188,10 +200,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         titleLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Remove all components, revalidate and repaint to update the display
-                contentPane.removeAll();
-                contentPane.revalidate();
-                contentPane.repaint();
                 // call method to load the menu screen
                 menuScreen();
             }
@@ -203,6 +211,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * This method will load a menu in the GUI that allows the user to select gamemode, and track difficulty.
      */
     private void menuScreen() {
+        contentPane.removeAll();
+        contentPane.revalidate();
+        contentPane.repaint();
+
         // Set up JRadioButtons for gamemode selection
         gamemodeSelection = new JRadioButton[2]; // Change this if more gamemodes
         timeTrialButton = new JRadioButton("Time Trial");
@@ -278,8 +290,16 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         }
 
         // Play button
-        playButton = new JButton("Play");
+        playButton = new JButton("Play Game");
         playButton.addActionListener(this);
+
+        // How to play button
+        howToPlayButton = new JButton("How to Play");
+        howToPlayButton.addActionListener(this);
+
+        // Quit button
+        exitButton = new JButton("Quit Game");
+        exitButton.addActionListener(this);
 
         // Resize JFrame
         gameJFrame.setTitle("Pixel Drift Menu");
@@ -303,15 +323,48 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         menuPanel.add(trackButtonPanel);
         menuPanel.add(trackImagePanel);
 
+        menuButtonPanel = new JPanel(new GridLayout(1,3));
+        menuButtonPanel.add(exitButton);
+        menuButtonPanel.add(howToPlayButton);
+        menuButtonPanel.add(playButton);
+
         contentPane.add(menuPanel, BorderLayout.CENTER);
-        contentPane.add(playButton, BorderLayout.SOUTH);
+        contentPane.add(menuButtonPanel, BorderLayout.SOUTH);
 
         gameJFrame.pack();
         gameJFrame.setLocationRelativeTo(null);
         gameJFrame.setVisible(true);
 
-        // load track here and set cars to track panel and then load
 
+    }
+
+    /**
+     * This method can be called from the menu to load a how to play information screen where the user can return to the
+     * menu or quit the game.
+     */
+    private void howToPlayScreen() {
+        contentPane.removeAll();
+        contentPane.revalidate();
+        contentPane.repaint();
+
+        controlsImage = new ImageIcon("src/data/controls.png");
+        controlsLabel = new JLabel(controlsImage);
+        controlsPanel = new JPanel();
+        controlsPanel.add(controlsLabel);
+
+        menuButton = new JButton("Return to Menu");
+        menuButton.addActionListener(this);
+
+        menuButtonPanel = new JPanel(new GridLayout(1,2));
+        menuButtonPanel.add(exitButton);
+        menuButtonPanel.add(menuButton);
+
+        contentPane.add(controlsPanel, BorderLayout.CENTER);
+        contentPane.add(menuButtonPanel, BorderLayout.SOUTH);
+
+        gameJFrame.pack();
+        gameJFrame.setLocationRelativeTo(null);
+        gameJFrame.setVisible(true);
 
     }
 
@@ -344,9 +397,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 cars[0].stopTimer();
 
                 // Display in message and ask if they want to go to the menu or play again
-                JOptionPane.showMessageDialog(null, "You finished the track in: " +cars[0].getRaceTime() + " seconds!" );
-                int selection = JOptionPane.showConfirmDialog(null,"Choose one",
-                        "Would you like to play again?", JOptionPane.YES_NO_OPTION);
+                JOptionPane.showMessageDialog(null, "You finished the track in: " + cars[0].getRaceTime() + " seconds!" );
+                int selection = JOptionPane.showConfirmDialog(null,"Would you like to play again?",
+                        "End of Race", JOptionPane.YES_NO_OPTION);
                 // Return to menu or call play again
                 if (selection == JOptionPane.YES_OPTION) {
                     // Restart game
@@ -405,6 +458,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             cars[0].incrementCheckpointCount();
             cars[0].setCheckpointCooldown(false);
             checkpointTick(cars[0]);
+
+            // Flash the hit checkpoint
+            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
+            checkpointResetTick(track.getCheckpointGroupNum(carTile1.getXPos(), carTile1.getYPos()));
         } else if (surface1 == Tile.Surface.WALL || surface1 == Tile.Surface.BARRIER) {
             cars[0].hitWall();
         } else if (surface1 == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
@@ -421,6 +478,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             cars[1].incrementCheckpointCount();
             cars[1].setCheckpointCooldown(false);
             checkpointTick(cars[1]);
+
+            // Flash the hit checkpoint
+            track.hitCheckpointGroup(carTile2.getXPos(), carTile2.getYPos());
+            checkpointResetTick(track.getCheckpointGroupNum(carTile2.getXPos(), carTile2.getYPos()));
         } else if (surface2 == Tile.Surface.WALL || surface2 == Tile.Surface.BARRIER) {
             cars[1].hitWall();
         } else if (surface2 == Tile.Surface.FINISH && cars[1].getCheckPointCount() >= track.getNumCheckpoints()) {
@@ -501,11 +562,28 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param car the Car that hit the checkpoint
      */
     private void checkpointTick(Car car) {
-        // Create timer for 3 seconds to set car's checkpoint cooldwon to true
+        // Create timer for 1 second to set car's checkpoint cooldown to true
         javax.swing.Timer timer = new javax.swing.Timer(1000, null);
         timer.addActionListener(e -> {
             // True means its over and can cross the checkpoint
             car.setCheckpointCooldown(true);
+            ((javax.swing.Timer)e.getSource()).stop();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    /**
+     * This method is used in two player mode so when either car hits a checkpoint it stays hit color for half a second
+     * so both cars can visually see if they have hit the checkpoint.
+     *
+     * @param groupNum, the checkpointGroup number of the checkpoint group
+     */
+    private void checkpointResetTick(int groupNum) {
+        // Create timer for half a second to reset a checkpoint groups color
+        javax.swing.Timer timer = new javax.swing.Timer(500, null);
+        timer.addActionListener(e -> {
+            track.resetSpecificCheckpoint(groupNum);
             ((javax.swing.Timer)e.getSource()).stop();
         });
         timer.setRepeats(false);
@@ -788,6 +866,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel.addKeyListener(this);
                 startGame = true;  //allow countdown to begin
             }
+        } else if (e.getSource() == exitButton) {
+            // Show message then quit
+            JOptionPane.showMessageDialog(null, "Thank you for playing PixelDrift!");
+            System.exit(1);
+        } else if (e.getSource() == howToPlayButton) {
+            howToPlayScreen();
+        } else if (e.getSource() == menuButton) {
+            menuScreen();
         }
     }
 }
