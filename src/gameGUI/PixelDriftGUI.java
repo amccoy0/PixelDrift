@@ -716,14 +716,29 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_S -> down = false;
             case KeyEvent.VK_A -> left = false;
             case KeyEvent.VK_D -> right = false;
-            case KeyEvent.VK_SPACE -> drift = false;
+
 
             // Player 2
             case KeyEvent.VK_UP -> up2 = false;
             case KeyEvent.VK_DOWN -> down2 = false;
             case KeyEvent.VK_LEFT -> left2 = false;
             case KeyEvent.VK_RIGHT -> right2 = false;
-            case KeyEvent.VK_SHIFT -> drift2 = false;
+
+            case KeyEvent.VK_SPACE -> {
+                if (cars.length > 1) {
+                    drift2 = false;
+                } else {
+                    drift = false;
+                }
+            }
+
+            case KeyEvent.VK_SHIFT -> {
+                if (cars.length > 1) {
+                    drift = false;
+                } else {
+                    drift2 = false;
+                }
+            }
         }
     }
 
