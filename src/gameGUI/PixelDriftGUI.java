@@ -28,27 +28,35 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     private static final int COUNTDOWN = 3;
 
     /** Number of laps required to finish */
-    private static final int MAX_LAPS = 2;
+    private static final int MAX_LAPS = 1;
 
     /** Main game window. */
     private final JFrame gameJFrame;
 
     /** JRadioButton array for track difficulty */
     private JRadioButton[] trackDifficulty;
+
     /** JRadioButton array for gamemode */
     private JRadioButton[] gamemodeSelection;
+
     /** JRadioButton for time trial gamemode */
     private JRadioButton timeTrialButton;
+
     /** JRadioButton for two player gamemode */
     private JRadioButton twoPlayerButton;
+
     /** JRadioButton for keep track of the currently selected track button */
     private JRadioButton currentTrackButton;
+
     /** JRadioButton for keep track of the currently selected gamemode button */
     private JRadioButton currentGamemodeButton;
+
     /** JRadioButton for easy track */
     private JRadioButton easyTrackButton;
+
     /** JRadioButton for medium track */
     private JRadioButton mediumTrackButton;
+
     /** JRadioButton for hard track */
     private JRadioButton hardTrackButton;
 
@@ -555,6 +563,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 for (Car car : cars){
                     car.startTimer();
                 }
+                gameJFrame.setTitle("Go!");
                 gameTimer = new java.util.Timer();
                 gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
 
