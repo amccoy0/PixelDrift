@@ -226,4 +226,25 @@ public class Track {
         checkPointGroups.resetAllGroups();
     }
 
+    /**
+     * References CheckPointGroups method of resetting a specific checkpointGroup colors to the non-hit color when the car
+     * crosses a checkpoint.
+     *
+     * @param groupNum the groupNum of the checkpoint hit
+     */
+    public void resetSpecificCheckpoint(int groupNum) {
+        checkPointGroups.resetSpecificGroup(groupNum);
+    }
+
+    /**
+     * References CheckPointGroups method of returning a checkpoints group number
+     *
+     * @param xPos the xPos of the tile
+     * @param yPos the yPos of the tile
+     * @return the checkpointGroup number of the specific track tile in the track
+     */
+    public int getCheckpointGroupNum(int xPos, int yPos) {
+        return checkPointGroups.getGroupNumber(xPos, yPos);
+    }
+
 }
