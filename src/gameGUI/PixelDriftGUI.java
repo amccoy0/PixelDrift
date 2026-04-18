@@ -19,7 +19,7 @@ import java.util.TimerTask;
  * Author: August McCoy
  * Code Descirption: This is the GUI class that will run the Pixel Drift Game
  */
-public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListener, ActionListener, ItemListener {
+public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener, ItemListener {
 
     /** Time between game updates in milliseconds. */
     public static final int TIME_TO_UPDATE = 10;
@@ -87,7 +87,13 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** This is the controls JLabel to put the image icon into */
     private JLabel controlsLabel;
 
-    /** This is the JPanel to put the controls JLbabel into */
+    /** This is the Image Icon for the objectives of the game*/
+    private ImageIcon objectiveImage;
+
+    /** This is the objective JLabel to put the image icon into */
+    private JLabel objectiveLabel;
+
+    /** This is the JPanel to put the controls and game objective JLbabel into */
     private JPanel controlsPanel;
 
     /** This is the JPanel for all of the Exit, Menu, StartGame, HowToPlay buttons */
@@ -159,6 +165,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     /** Used for countdown timer, determines when the user can start the game countdown or not*/
     private boolean startGame;
 
+    /** String array for JOptionPane options when game ends */
+    private static final String[] endGameOptions = {"Go to Menu", "Play again"};
+
     private JPanel infoPanel;
     private JLabel timerLabel;
     private JLabel lapLabel;
@@ -199,9 +208,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
     public static void main(String[] args) {
         new PixelDriftGUI();
     }
-
-
-
 
     /**
      * This method loads an image to represent the starting screen of the game. It has a mouse listener for a mouse click
@@ -367,13 +373,19 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
 
         controlsImage = new ImageIcon("src/data/controls.png");
         controlsLabel = new JLabel(controlsImage);
+
+        objectiveImage = new ImageIcon("src/data/objective.png");
+        objectiveLabel = new JLabel(objectiveImage);
+
         controlsPanel = new JPanel();
+        controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
         controlsPanel.add(controlsLabel);
+        controlsPanel.add(objectiveLabel);
 
         menuButton = new JButton("Return to Menu");
         menuButton.addActionListener(this);
 
-        menuButtonPanel = new JPanel(new GridLayout(1,2));
+        menuButtonPanel = new JPanel(new GridLayout(1, 2));
         menuButtonPanel.add(exitButton);
         menuButtonPanel.add(menuButton);
 
@@ -412,14 +424,15 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             if (cars[0].getLap() >= MAX_LAPS) {
                 // Stop timer and game
                 gameRunning = false;
+                gameTimer.cancel();
                 cars[0].stopTimer();
 
                 // Display in message and ask if they want to go to the menu or play again
                 JOptionPane.showMessageDialog(null, "You finished the track in: " + cars[0].getRaceTime() + " seconds!" );
-                int selection = JOptionPane.showConfirmDialog(null,"Would you like to play again?",
-                        "End of Race", JOptionPane.YES_NO_OPTION);
+                int selection = JOptionPane.showOptionDialog(null,"Would you like to play again or go to the menu?",
+                        "End of Race", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, endGameOptions, endGameOptions[0]);
                 // Return to menu or call play again
-                if (selection == JOptionPane.YES_OPTION) {
+                if (selection == 1) {
                     // Restart game
                     restartTimeTrial();
                 } else {
@@ -444,6 +457,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * a time trial race.
      */
     private void restartTimeTrial() {
+        gameTimer.cancel();
         // Create trackPanel and add cars
         trackPanel = new TrackPanel(track, 1);
         trackPanel.setFocusable(true);
@@ -452,12 +466,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
-        gameJFrame.add(trackPanel, BorderLayout.CENTER);
+        gameJFrame.add(trackPanel);
+        trackPanel.repaint();
         createInfoPanel();
         gameJFrame.pack();
         gameJFrame.revalidate();
-        trackPanel.repaint();
         trackPanel.requestFocusInWindow();
+
+
 
         // Set title in here
         gameJFrame.setTitle("Time Trial Gamemode: Press W to Start Countdown");
@@ -484,6 +500,10 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         } else if (surface1 == Tile.Surface.WALL || surface1 == Tile.Surface.BARRIER) {
             cars[0].hitWall();
         } else if (surface1 == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
+            // Flash Finish line
+            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
+            checkpointResetTick(track.getCheckpointGroupNum(carTile1.getXPos(), carTile1.getYPos()));
+
             cars[0].incrementLap();
             cars[0].resetCheckpointCount();
             if (cars[0].getLap() >= MAX_LAPS) {
@@ -504,12 +524,19 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         } else if (surface2 == Tile.Surface.WALL || surface2 == Tile.Surface.BARRIER) {
             cars[1].hitWall();
         } else if (surface2 == Tile.Surface.FINISH && cars[1].getCheckPointCount() >= track.getNumCheckpoints()) {
+
+            // Flash Finish line
+            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
+            checkpointResetTick(track.getCheckpointGroupNum(carTile1.getXPos(), carTile1.getYPos()));
+
             cars[1].incrementLap();
             cars[1].resetCheckpointCount();
             if (cars[1].getLap() >= MAX_LAPS) {
                 if(player1Finished) { endTwoPlayer(); }
             }
         }
+
+
     }
 
     private void endTwoPlayer() {
@@ -565,7 +592,14 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 }
                 gameJFrame.setTitle("Go!");
                 gameTimer = new java.util.Timer();
-                gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
+
+                // Had to do this to fix timertask bugs
+                gameTimer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        PixelDriftGUI.this.run();
+                    }
+                }, 0, TIME_TO_UPDATE);
 
             }
         });
@@ -616,7 +650,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * Called repeatedly by the Timer to update the game state.
      * Handles movement controls and redraws the screen.
      */
-    @Override
     public void run() {
 
         if (!gameRunning) return;
@@ -901,6 +934,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 trackPanel.requestFocusInWindow();
 
                 gameJFrame.setTitle("Two Player: Press W to Start Countdown");  // prompt player
+                gameJFrame.setLocationRelativeTo(null);
                 gameJFrame.setVisible(true);
                 trackPanel.addKeyListener(this);
                 startGame = true;  //allow countdown to begin

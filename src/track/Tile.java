@@ -44,7 +44,7 @@ public class Tile {
         DIRT('D', 0.97, 0.8, 2.0, false, new Color(139, 69, 19)),
         GRASS('G', 0.93, 0.75, 1.2, false, new Color(34, 139, 34)),
         SAND('S', 0.95, 0.78, 2.3, false, new Color(180, 160, 100)),
-        FINISH('F',0.97, 0.8, 2.0, false, Color.WHITE),
+        FINISH('F',0.97, 0.8, 2.0, true, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 2.0, true, Color.BLUE),
         BARRIER('B', 0.93, 0.75, 1.2, false, new Color(34, 139, 34)),
         WALL('W', 0.93, 0.75, 1.2, false, Color.BLACK);
