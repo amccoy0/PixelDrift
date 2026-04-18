@@ -401,7 +401,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             cars[0].incrementLap();
             track.resetCheckpoints();
             // Check if car has reached max lap count and stop game
-            if (cars[0].getLap() >= MAX_LAPS) {
+            if (cars[0].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 // Stop timer and game
                 gameRunning = false;
                 cars[0].stopTimer();
@@ -478,9 +478,9 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         } else if (surface1 == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             cars[0].resetCheckpointCount();
-            if (cars[0].getLap() >= MAX_LAPS) {
+            if (cars[0].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
+                player1Finished = true;
                 if(player2Finished) { endTwoPlayer(); };
-
             }
         }
 
@@ -498,7 +498,8 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
         } else if (surface2 == Tile.Surface.FINISH && cars[1].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[1].incrementLap();
             cars[1].resetCheckpointCount();
-            if (cars[1].getLap() >= MAX_LAPS) {
+            if (cars[1].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
+                player2Finished = true;
                 if(player1Finished) { endTwoPlayer(); }
             }
         }
@@ -554,13 +555,18 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                 // Start car timers
                 for (Car car : cars){
                     car.startTimer();
+                    // This is so the lap increments at the start
+                    for ( int i = 0; i < track.getNumCheckpoints(); i++) {
+                        car.incrementCheckpointCount();
+                    }
                 }
+                gameJFrame.setTitle("Go!");
                 gameTimer = new java.util.Timer();
                 gameTimer.scheduleAtFixedRate(this, 0, TIME_TO_UPDATE);
 
             }
         });
-        gameJFrame.setTitle("PixelDrift");
+
         timer.setInitialDelay(0);
         timer.start();
 
@@ -684,17 +690,24 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
                     up = true;
                 }
             }
+
             case KeyEvent.VK_S -> down = true;
             case KeyEvent.VK_A -> left = true;
             case KeyEvent.VK_D -> right = true;
-            case KeyEvent.VK_SPACE -> drift = true;
 
-            // Player 2
+            // Player 2 (if necessary)
             case KeyEvent.VK_UP -> up2 = true;
             case KeyEvent.VK_DOWN -> down2 = true;
             case KeyEvent.VK_LEFT -> left2 = true;
             case KeyEvent.VK_RIGHT -> right2 = true;
-            case KeyEvent.VK_SHIFT -> drift2 = true;
+
+            case KeyEvent.VK_SPACE -> {
+                if (cars.length > 1) { drift2 = true; }  // 2P: player 2 drift
+                else { drift = true; }                    // 1P: player 1 drift
+            }
+            case KeyEvent.VK_SHIFT -> {
+                if (cars.length > 1) drift = true;        // 2P: player 1 drift only
+            }
         }
     }
 
@@ -717,7 +730,6 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_A -> left = false;
             case KeyEvent.VK_D -> right = false;
 
-
             // Player 2
             case KeyEvent.VK_UP -> up2 = false;
             case KeyEvent.VK_DOWN -> down2 = false;
@@ -725,19 +737,11 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
             case KeyEvent.VK_RIGHT -> right2 = false;
 
             case KeyEvent.VK_SPACE -> {
-                if (cars.length > 1) {
-                    drift2 = false;
-                } else {
-                    drift = false;
-                }
+                if (cars.length > 1) { drift2 = false; }
+                else { drift = false; }
             }
-
             case KeyEvent.VK_SHIFT -> {
-                if (cars.length > 1) {
-                    drift = false;
-                } else {
-                    drift2 = false;
-                }
+                if (cars.length > 1) drift = false;
             }
         }
     }
@@ -756,9 +760,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param e key event
      */
     @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
+    public void mouseClicked(MouseEvent e) {}
 
     /**
      * Required method, not implemented
@@ -766,9 +768,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param e key event
      */
     @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
+    public void mousePressed(MouseEvent e) {}
 
     /**
      * Required method, not implemented
@@ -776,9 +776,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param e key event
      */
     @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
+    public void mouseReleased(MouseEvent e) {}
 
     /**
      * Required method, not implemented
@@ -786,9 +784,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param e key event
      */
     @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
+    public void mouseEntered(MouseEvent e) {}
 
     /**
      * Required method, not implemented
@@ -796,9 +792,7 @@ public class PixelDriftGUI extends TimerTask implements KeyListener, MouseListen
      * @param e key event
      */
     @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
+    public void mouseExited(MouseEvent e) {}
 
     /**
      * This method is only called when a JRadioButton is selected. It reassigns the respective selected button for each
