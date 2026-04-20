@@ -462,7 +462,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         trackPanel = new TrackPanel(track, 1);
         trackPanel.setFocusable(true);
         cars = new Car[1];
-        cars[0] = new Car(100, 100, "testCar.png");
+        cars[0] = new Car(100, 100, "RedCar.png");
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -913,8 +913,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 trackPanel = new TrackPanel(track, 2);
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
-                cars[0] = new Car(100, 100, "testCar.png");
-                cars[1] = new Car(50, 50, "testCar.png");
+                cars[0] = new Car(100, 100, "RedCar.png");
+                cars[1] = new Car(50, 50, "PurpleCar.png");
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
