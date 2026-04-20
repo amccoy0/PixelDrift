@@ -4,12 +4,18 @@ import car.Car;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
  * TrackPanel.java
  * Author: August McCoy
  * Code Description: This class represents the visual Track. It extends JPanel to allow the use of the paint component
- * method which allows us to draw the track. Each Tile in the track is represented by a 5x5 pixel square.
+ * method which allows us to draw the track. Each Tile in the track is represented by a 8x8 pixel square.
+ *
+ * Double buffering, implemented by claude.ai: all drawing is done onto an off-screen BufferedImage first, then the finished
+ * frame is stamped onto the panel in a single drawImage() call. This eliminates the flickering /
+ * tearing that happens when the track and cars are painted directly to the screen tile-by-tile.
+ * The buffer is only recreated when the panel is first used or its size changes.
  */
 public class TrackPanel extends JPanel {
     /** Track that will be assigned to track panel for redrawing */
@@ -21,6 +27,12 @@ public class TrackPanel extends JPanel {
     /** Array of cars for redrawing */
     private Car[] cars;
 
+    /** Off-screen buffer - we draw everything here first, then blit it to the panel */
+    private BufferedImage buffer;
+
+    /** Graphics context for the off-screen buffer */
+    private Graphics2D bufferGraphics;
+
     /**
      * Constructor for TrackPanel
      *
@@ -31,39 +43,82 @@ public class TrackPanel extends JPanel {
         this.track = track;
         this.numCars = numCars;
         this.cars = new Car[numCars];
+
+        // Tell Swing we are handling our own double buffering so it does not do
+        // its own (lighter-weight) version on top of ours.
+        setDoubleBuffered(false);
     }
 
     /**
-     * This method will draw every Tile in the track
+     * Creates (or recreates) the off-screen buffer to match the current panel size.
+     * Called lazily from paintComponent so we always have valid dimensions.
+     */
+    private void createBuffer() {
+        int w = getWidth();
+        int h = getHeight();
+
+        // Nothing to do if the panel hasn't been sized yet
+        if (w <= 0 || h <= 0) {
+            return;
+        }
+
+        // Dispose of the old context to avoid a graphics resource leak
+        if (bufferGraphics != null) {
+            bufferGraphics.dispose();
+        }
+
+        buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        bufferGraphics = buffer.createGraphics();
+    }
+
+    /**
+     * Paints everything onto the off-screen buffer, then draws the completed buffer
+     * onto the panel in a single call — no partially-drawn frames ever reach the screen.
      *
-     * @param g the <code>Graphics</code> object to protect
+     * @param g the Graphics context provided by Swing for the panel surface
      */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Redraw the track
+        // Recreate the buffer if it doesn't exist yet or if the panel was resized
+        if (buffer == null || buffer.getWidth() != getWidth() || buffer.getHeight() != getHeight()) {
+            createBuffer();
+        }
+
+        // Guard: if the panel still has no size (e.g. before it is displayed), bail out
+        if (bufferGraphics == null) {
+            return;
+        }
+
+        // --- Draw everything onto the off-screen buffer ---
+
+        // 1. Draw the track tiles
         for (int r = 0; r < track.getRows(); r++) {
             for (int c = 0; c < track.getCols(); c++) {
-
                 Color tileColor = track.drawTrackHelper(r, c);
-
-                g.setColor(tileColor);
-
-                g.fillRect(c * Tile.getTileSize(), r * Tile.getTileSize(), Tile.getTileSize(), Tile.getTileSize());
+                bufferGraphics.setColor(tileColor);
+                bufferGraphics.fillRect(
+                        c * Tile.getTileSize(),
+                        r * Tile.getTileSize(),
+                        Tile.getTileSize(),
+                        Tile.getTileSize()
+                );
             }
         }
 
-        // Draw car on top of track
+        // 2. Draw cars on top of the track
         if (cars.length != 0) {
-            for (Car c: cars) {
-                c.draw(g);
+            for (Car car : cars) {
+                if (car != null) {
+                    car.draw(bufferGraphics);
+                }
             }
-
         }
+
+        // --- Blit the completed buffer to the screen in one atomic operation ---
+        g.drawImage(buffer, 0, 0, null);
     }
-
-
 
     /**
      * This is used so the track will show fully without having to use magic numbers due to window sizing
@@ -79,11 +134,11 @@ public class TrackPanel extends JPanel {
     }
 
     /**
-     * This is used to assign a car to the track panel so
+     * This is used to assign a car to the track panel
+     *
      * @param car the car being assigned to the track
      */
     public void setCar(Car car) {
-        // Set the car to a null spot in array
         for (int i = 0; i < numCars; i++) {
             if (cars[i] == null) {
                 this.cars[i] = car;
@@ -91,5 +146,4 @@ public class TrackPanel extends JPanel {
             }
         }
     }
-
 }

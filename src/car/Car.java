@@ -429,4 +429,30 @@ public class Car {
         // dampen slightly so it doesn't feel rubbery
         velocity.scale(0.8);
     }
+
+    /**
+     * Resets the car to a clean state for a new race.
+     * Zeroes velocity, angle, lap count, checkpoint count,
+     * and all physics state so no data bleeds in from a previous game.
+     *
+     * @param xPos new starting x position
+     * @param yPos new starting y position
+     */
+    public void reset(double xPos, double yPos) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+        this.angle = 0;
+        this.velocity = new VelocityVector();   // zero velocity
+        this.drift = false;
+        this.lap = 0;
+        this.checkPointCount = 0;
+        this.checkpointCooldown = true;
+        this.lastTile = null;
+        this.canAccelerate = true;
+        this.prevX = xPos;
+        this.prevY = yPos;
+        this.startTime = 0;
+        this.endTime = 0;
+        this.raceTime = 0;
+    }
 }

@@ -42,11 +42,11 @@ public class Tile {
      */
     public enum Surface {
         DIRT('D', 0.97, 0.8, 2.0, false, new Color(139, 69, 19)),
-        GRASS('G', 0.93, 0.75, 1.2, false, new Color(34, 139, 34)),
+        GRASS('G', 0.93, 0.75, 1.3, false, new Color(34, 139, 34)),
         SAND('S', 0.95, 0.78, 2.3, false, new Color(180, 160, 100)),
         FINISH('F',0.97, 0.8, 2.0, true, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 2.0, true, Color.BLUE),
-        BARRIER('B', 0.93, 0.75, 1.2, false, new Color(34, 139, 34)),
+        BARRIER('B', 0.93, 0.75, 1.2, false, Color.PINK),
         WALL('W', 0.93, 0.75, 1.2, false, Color.BLACK);
 
 
@@ -89,6 +89,7 @@ public class Tile {
                 break;
             case 'F':
                 surface = Surface.FINISH;
+                checkPointHitColor = Color.RED;
                 break;
             case 'C':
                 surface = Surface.CHECKPOINT;
@@ -136,6 +137,8 @@ public class Tile {
      */
     public Color getTileColor() {
         if (surface == Surface.CHECKPOINT && hitCheckpoint) {
+            return checkPointHitColor;
+        } else if (surface == Surface.FINISH && hitCheckpoint) {
             return checkPointHitColor;
         }
         return tileColor;

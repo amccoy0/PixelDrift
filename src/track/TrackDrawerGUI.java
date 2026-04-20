@@ -143,7 +143,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         // numCheckpoints doesn't really matter in this context because it is assigned in PixelDrift, we are just drawing.
         // Change filename to src/data/grass.txt for blank template with 2 layers of walls and one layer of invisible
         // barrier
-        track = new Track("src/data/mediumTrack.txt", 2);
+        track = new Track("src/data/hardTrack.txt", 2);
         trackPanel = new TrackPanel(track, 0);
         contentPane.add(trackPanel, BorderLayout.SOUTH);
         drawingJFrame.pack();

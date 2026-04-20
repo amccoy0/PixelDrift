@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 /**
  * PixelDriftGUI.java
- * Author: August McCoy
+ * Author: August McCoy + David Ramshaw
  * Code Descirption: This is the GUI class that will run the Pixel Drift Game
  */
 public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener, ItemListener {
@@ -28,7 +28,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     private static final int COUNTDOWN = 3;
 
     /** Number of laps required to finish */
-    private static final int MAX_LAPS = 1;
+    private static final int MAX_LAPS = 3;
 
     /** Main game window. */
     private final JFrame gameJFrame;
@@ -378,7 +378,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         objectiveLabel = new JLabel(objectiveImage);
 
         controlsPanel = new JPanel();
-        controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.Y_AXIS));
+        controlsPanel.setLayout(new BoxLayout(controlsPanel, BoxLayout.X_AXIS));
         controlsPanel.add(controlsLabel);
         controlsPanel.add(objectiveLabel);
 
@@ -463,6 +463,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         trackPanel.setFocusable(true);
         cars = new Car[1];
         cars[0] = new Car(100, 100, "RedCar.png");
+        cars[0].reset(100,100);
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -526,8 +527,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         } else if (surface2 == Tile.Surface.FINISH && cars[1].getCheckPointCount() >= track.getNumCheckpoints()) {
 
             // Flash Finish line
-            track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
-            checkpointResetTick(track.getCheckpointGroupNum(carTile1.getXPos(), carTile1.getYPos()));
+            track.hitCheckpointGroup(carTile2.getXPos(), carTile2.getYPos());
+            checkpointResetTick(track.getCheckpointGroupNum(carTile2.getXPos(), carTile2.getYPos()));
 
             cars[1].incrementLap();
             cars[1].resetCheckpointCount();
@@ -914,7 +915,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
                 cars[0] = new Car(100, 100, "RedCar.png");
-                cars[1] = new Car(50, 50, "PurpleCar.png");
+                cars[0].reset(100,100);
+                cars[1] = new Car(100, 50, "PurpleCar.png");
+                cars[1].reset(100,50);
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
