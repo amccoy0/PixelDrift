@@ -15,64 +15,104 @@ import static track.Tile.getTileSize;
  */
 public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemListener, MouseListener, MouseMotionListener {
 
-    /** Time to redraw the track */
+    /**
+     * Time to redraw the track
+     */
     private static final int TIME_TO_UPDATE = 10;
 
-    /** Timer to update the track drawing */
+    /**
+     * Timer to update the track drawing
+     */
     private final java.util.Timer drawingTimer = new java.util.Timer();
 
-    /** The trackPanel we are using to visually see the track */
+    /**
+     * The trackPanel we are using to visually see the track
+     */
     private TrackPanel trackPanel;
 
-    /** The track data structure we are editing, not overwriting */
+    /**
+     * The track data structure we are editing, not overwriting
+     */
     private Track track;
 
-    /** The JFrame to draw the Track and add the buttons to */
+    /**
+     * The JFrame to draw the Track and add the buttons to
+     */
     private JFrame drawingJFrame;
 
-    /** Container for contentPane, trackPanel and buttonPanel will be displayed here */
+    /**
+     * Container for contentPane, trackPanel and buttonPanel will be displayed here
+     */
     private final Container contentPane;
 
-    /** This is the array of JRadioButtons that each tile type will be added to */
+    /**
+     * This is the array of JRadioButtons that each tile type will be added to
+     */
     private JRadioButton[] tileTypes;
 
-    /** This is the buttonGroup for the tileType JRadioButtons so only one can be selected at a time */
+    /**
+     * This is the buttonGroup for the tileType JRadioButtons so only one can be selected at a time
+     */
     private ButtonGroup tileButtonGroup;
 
-    /** This is the dirt Tile JRadioButton */
+    /**
+     * This is the dirt Tile JRadioButton
+     */
     private JRadioButton dirtButton;
 
-    /** This is the sand Tile JRadioButton */
+    /**
+     * This is the sand Tile JRadioButton
+     */
     private JRadioButton sandButton;
 
-    /** This is the finish Tile JRadioButton */
+    /**
+     * This is the finish Tile JRadioButton
+     */
     private JRadioButton finishButton;
 
-    /** This is the checkpoint Tile JRadioButton */
+    /**
+     * This is the checkpoint Tile JRadioButton
+     */
     private JRadioButton checkpointButton;
 
-    /** This is the grass Tile JRadioButton */
+    /**
+     * This is the grass Tile JRadioButton
+     */
     private JRadioButton grassButton;
 
-    /** This is the barrier Tile JRadioButton */
+    /**
+     * This is the barrier Tile JRadioButton
+     */
     private JRadioButton barrierButton;
 
-    /** This is the wall Tile JRadioButton */
+    /**
+     * This is the wall Tile JRadioButton
+     */
     private JRadioButton wallButton;
 
-    /** This is the currently selected Tile JRadioButton */
+    /**
+     * This is the currently selected Tile JRadioButton
+     */
     private JRadioButton currentTileButton;
 
-    /** This is the currently selected Tile char so we can pass it to track and change a tile */
+    /**
+     * This is the currently selected Tile char so we can pass it to track and change a tile
+     */
     private char currentTileChar;
 
-    /** This is the panel that the JRadioButtons and the file button will be added to */
+    /**
+     * This is the panel that the JRadioButtons and the file button will be added to
+     */
     private JPanel buttonPanel;
 
-    /** This is the JTextField of the filename that we will write */
+    /**
+     * This is the JTextField of the filename that we will write
+     */
     private JTextField fileNameField;
 
-    /** Button to write the file */
+    /**
+     * Button to write the file
+     */
     private JButton fileButton;
 
     /**
@@ -120,13 +160,13 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         currentTileChar = 'G';
 
         // Add buttons to the button group
-        for (JRadioButton button: tileTypes) {
+        for (JRadioButton button : tileTypes) {
             tileButtonGroup.add(button);
         }
 
         // Create and add buttons to the panel
         buttonPanel = new JPanel(new GridLayout(2, 5, 0, 0));
-        for (JRadioButton button: tileTypes) {
+        for (JRadioButton button : tileTypes) {
             // This should fill the first row with the buttons
             buttonPanel.add(button);
         }
@@ -217,7 +257,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
         // Check if one of the buttons is selected
         if (e.getStateChange() == ItemEvent.SELECTED) {
             // Check what the source is
-            for (JRadioButton tileType: tileTypes) {
+            for (JRadioButton tileType : tileTypes) {
                 if (e.getSource() == tileType) {
                     currentTileButton = tileType;
                 }
@@ -259,6 +299,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
 
     /**
      * Not used
+     *
      * @param e the event to be processed
      */
     @Override
@@ -268,6 +309,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
 
     /**
      * Not used
+     *
      * @param e the event to be processed
      */
     @Override
@@ -312,6 +354,7 @@ public class TrackDrawerGUI extends TimerTask implements ActionListener, ItemLis
 
     /**
      * Not used
+     *
      * @param e the event to be processed
      */
     @Override

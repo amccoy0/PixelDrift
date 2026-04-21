@@ -1,11 +1,4 @@
-/**
- * File name: CarController.java
- *
- * Description:
- * Controls the main game loop and user input for the car simulation.
- * This class manages keyboard controls, updates the car's movement,
- * and handles drawing the car on the screen.
- */
+
 
 package car;
 
@@ -15,7 +8,12 @@ import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
+/**
+ * CarController.java
+ * Code Description: Controls the main game loop and user input for the car simulation.
+ * This class manages keyboard controls, updates the car's movement,
+ * and handles drawing the car on the screen.
+ */
 public class CarController extends TimerTask implements KeyListener {
 
     /** Time between game updates in milliseconds. */

@@ -4,7 +4,6 @@ import java.io.IOException;
 
 /**
  * TrackGenerator.java
- * Author: ChatGPT
  * Code Description: This class generates files for track generation. It was implemented by ChatGPT to write base track
  * files that will be editted later.
  */
@@ -23,7 +22,7 @@ public class TrackGenerator {
                 track[r][c] = 'G';
             }
         }
-        /*
+        /* Commented out to create grass only track
         // Define a simple loop rectangle in the middle
         int top = grassBorder;
         int left = grassBorder;
@@ -58,7 +57,7 @@ public class TrackGenerator {
             }
             System.out.println("Track generated successfully!");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error when writing track: " + e.getMessage());
         }
     }
 }

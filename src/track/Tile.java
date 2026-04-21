@@ -5,36 +5,53 @@ import java.util.Random;
 
 /**
  * Tile.java
- * Author: August McCoy
  * Code Description: This class represents a single Tile/Pixel of the track. It generates a variance of a base color for its specific tile type when
  * generated.
  */
 public class Tile {
-    /** Random used for applying random variation to the tile base color */
+    /**
+     * Random used for applying random variation to the tile base color
+     */
     private static final Random rand = new Random();
 
-    /** The size of the tile, # x # */
+    /**
+     * The size of the tile, # x #
+     */
     private static final int TILE_SIZE = 8;
 
-    /** The xPos of the tile in the double array */
+    /**
+     * The xPos of the tile in the double array
+     */
     private final int xPos;
 
-    /** The yPos of the tile in the double array */
+    /**
+     * The yPos of the tile in the double array
+     */
     private final int yPos;
 
-    /** I had to add this back in so the TrackDrawerGUI can write it to a file */
+    /**
+     * I had to add this back in so the TrackDrawerGUI can write it to a file
+     */
     private final char tileType;
 
-    /** Surface of the tile, used to store information */
+    /**
+     * Surface of the tile, used to store information
+     */
     private final Surface surface;
 
-    /** Color of the tile */
+    /**
+     * Color of the tile
+     */
     private Color tileColor;
 
-    /** This is the Color of the checkPoint when it has been hit by a car */
+    /**
+     * This is the Color of the checkPoint when it has been hit by a car
+     */
     private Color checkPointHitColor;
 
-    /** This is a boolean for if the checkpoint is hit or not, changes color based on boolean value */
+    /**
+     * This is a boolean for if the checkpoint is hit or not, changes color based on boolean value
+     */
     private boolean hitCheckpoint;
 
     /**
@@ -44,12 +61,10 @@ public class Tile {
         DIRT('D', 0.97, 0.8, 2.0, false, new Color(139, 69, 19)),
         GRASS('G', 0.93, 0.75, 1.3, false, new Color(34, 139, 34)),
         SAND('S', 0.95, 0.78, 2.3, false, new Color(180, 160, 100)),
-        FINISH('F',0.97, 0.8, 2.0, true, Color.WHITE),
+        FINISH('F', 0.97, 0.8, 2.0, true, Color.WHITE),
         CHECKPOINT('C', 0.97, 0.8, 2.0, true, Color.BLUE),
         BARRIER('B', 0.93, 0.75, 1.2, false, Color.PINK),
         WALL('W', 0.93, 0.75, 1.2, false, Color.BLACK);
-
-
 
         public final char tileType;
         public final double grip;
@@ -72,8 +87,8 @@ public class Tile {
     /**
      * Constructor, Track will read a double array and pass XPos, YPos, and tileType
      *
-     * @param xPos the xPos of the tile in the array
-     * @param yPos the yPos of the tile in the array
+     * @param xPos     the xPos of the tile in the array
+     * @param yPos     the yPos of the tile in the array
      * @param tileType the char of the tileyupe
      */
     public Tile(int xPos, int yPos, char tileType) {
@@ -183,6 +198,7 @@ public class Tile {
 
     /**
      * Getter for the Tile's tileType
+     *
      * @return char tileType, char representing the tile in file
      */
     public char getTileType() {

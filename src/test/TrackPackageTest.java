@@ -9,21 +9,28 @@ import java.io.IOException;
 
 /**
  * TrackPackageTest.java
- * Author: August McCoy
  * Code Description: This is the test class for all classes that can be tested in the track package. I used claude.ai to
  * make the tests for the checkpointgroups and track.
  */
 public class TrackPackageTest {
-    /** boolean for all tests for all classes being successful */
+    /**
+     * boolean for all tests for all classes being successful
+     */
     boolean allSuccess;
 
-    /** boolean for Tile class tests being successful */
+    /**
+     * boolean for Tile class tests being successful
+     */
     boolean tileSuccess;
 
-    /** boolean for Track class tests being successful */
+    /**
+     * boolean for Track class tests being successful
+     */
     boolean trackSuccess;
 
-    /** boolean for CheckPointGroups class tests being successful */
+    /**
+     * boolean for CheckPointGroups class tests being successful
+     */
     boolean checkpointSuccess;
 
     /**
@@ -242,14 +249,14 @@ public class TrackPackageTest {
     /**
      * Tests Track construction, dimension getters, tile access, changeTile,
      * getCurrentTile (pixel-space lookup), and numCheckpoints.
-     *
+     * <p>
      * Track layout used (6 rows x 8 cols, 1 checkpoint group):
-     *   WWWWWWWW
-     *   WDDDDDDW
-     *   WDCCCCGW
-     *   WDBBBBGW
-     *   WSSSSFDW
-     *   WWWWWWWW
+     * WWWWWWWW
+     * WDDDDDDW
+     * WDCCCCGW
+     * WDBBBBGW
+     * WSSSSFDW
+     * WWWWWWWW
      *
      * @return trackSuccess, true if all tests passed, false otherwise
      */
@@ -392,7 +399,7 @@ public class TrackPackageTest {
      * - resetCheckpoints restores all groups
      * - resetSpecificCheckpoint restores only the targeted group
      * - A second independent checkpoint group receives a different group number
-     *
+     * <p>
      * NOTE ON LAYOUT DESIGN:
      * CheckPointGroups uses V_H_CHECK=4 as its lookahead distance to detect
      * whether a band is horizontal or vertical. A horizontal band is detected
@@ -401,22 +408,22 @@ public class TrackPackageTest {
      * reliably trigger the vertical path and the zone creator correctly sweeps the
      * full column in one group. A horizontal band shorter than V_H_CHECK would fall
      * through to the diagonal path and produce unpredictable groupings.
-     *
+     * <p>
      * Track layout (10 rows x 8 cols, 2 checkpoint groups):
-     *   WWWWWWWW
-     *   WDCDDDGW   <- group 1 col=2, starts row=1
-     *   WDCDDDGW
-     *   WDCDDDGW
-     *   WDCDDDGW
-     *   WDCDDDGW   <- group 1 col=2, ends   row=5 (6 tiles tall > V_H_CHECK=4)
-     *   WDDDCDDW   <- group 2 col=4, starts row=6
-     *   WDDDCDDW
-     *   WDDDCDDW
-     *   WDDDCDDW
-     *   WDDDCDDW   <- group 2 col=4, ends   row=10 (but we only go to row 9 for 10 rows)
-     *   WSSSSFDW
-     *   WWWWWWWW   <- 13 rows total
-     *
+     * WWWWWWWW
+     * WDCDDDGW   <- group 1 col=2, starts row=1
+     * WDCDDDGW
+     * WDCDDDGW
+     * WDCDDDGW
+     * WDCDDDGW   <- group 1 col=2, ends   row=5 (6 tiles tall > V_H_CHECK=4)
+     * WDDDCDDW   <- group 2 col=4, starts row=6
+     * WDDDCDDW
+     * WDDDCDDW
+     * WDDDCDDW
+     * WDDDCDDW   <- group 2 col=4, ends   row=10 (but we only go to row 9 for 10 rows)
+     * WSSSSFDW
+     * WWWWWWWW   <- 13 rows total
+     * <p>
      * Simplified to 13 rows x 8 cols for clarity below.
      *
      * @return checkpointSuccess, true if all tests passed, false otherwise
@@ -486,8 +493,8 @@ public class TrackPackageTest {
         }
 
         // --- Test 3: All tiles in vertical band 2 (col=4, rows 7-11) share a DIFFERENT group number ---
-        int group2_row7  = track.getCheckpointGroupNum(4, 7);  // col=4, row=7
-        int group2_row9  = track.getCheckpointGroupNum(4, 9);  // col=4, row=9
+        int group2_row7 = track.getCheckpointGroupNum(4, 7);  // col=4, row=7
+        int group2_row9 = track.getCheckpointGroupNum(4, 9);  // col=4, row=9
         int group2_row11 = track.getCheckpointGroupNum(4, 11); // col=4, row=11
 
         if (group2_row7 == -1) {
@@ -513,7 +520,7 @@ public class TrackPackageTest {
         java.awt.Color red = java.awt.Color.RED;
 
         // getSpecificTile(row, col)
-        Tile cp1_top    = track.getSpecificTile(1, 2); // group1, row=1, col=2
+        Tile cp1_top = track.getSpecificTile(1, 2); // group1, row=1, col=2
         Tile cp1_bottom = track.getSpecificTile(6, 2); // group1, row=6, col=2
 
         if (cp1_top.getTileColor().equals(red)) {

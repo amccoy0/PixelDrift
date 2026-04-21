@@ -5,24 +5,33 @@ import java.io.*;
 
 /**
  * Track.java
- * Author: August McCoy
  * Code Description: This class represents a Track in Java. It is a double array of Tile objects that represent the track. Has functions to help
  * game logic and the drawing of the track.
  */
 public class Track {
-    /** Double tile array to store the track tiles for drawing/gamelogic */
+    /**
+     * Double tile array to store the track tiles for drawing/gamelogic
+     */
     private Tile[][] track;
 
-    /** The number of rows in the track */
+    /**
+     * The number of rows in the track
+     */
     private int rows;
 
-    /** The number of columns in the track */
+    /**
+     * The number of columns in the track
+     */
     private int cols;
 
-    /** The number of checkpoints on the track, not individual tiles but the number of checkpoint lines on the track */
+    /**
+     * The number of checkpoints on the track, not individual tiles but the number of checkpoint lines on the track
+     */
     private final int numCheckpoints;
 
-    /** The grouped checkpoints used to recolor a group when a single one is hit */
+    /**
+     * The grouped checkpoints used to recolor a group when a single one is hit
+     */
     private final CheckPointGroups checkPointGroups;
 
     /**
@@ -30,7 +39,7 @@ public class Track {
      *
      * @param filename takes file path to the file
      */
-    public Track (String filename, int numCheckpoints) {
+    public Track(String filename, int numCheckpoints) {
         // I will just pass number of checkpoints, will be used in game logic
         this.numCheckpoints = numCheckpoints;
         int lineCount = 0;
@@ -46,7 +55,7 @@ public class Track {
                 this.cols = Integer.parseInt(firstLine[1]);
                 // Create track
                 this.track = new Tile[rows][cols];
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.err.println("Illegal first line of file cannot pass data to create track");
             }
 
@@ -69,7 +78,7 @@ public class Track {
                     lineCount++;
                     // UPDATE THIS
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.err.println(e.getMessage());
                 }
             }
         } catch (FileNotFoundException e) {
@@ -111,29 +120,6 @@ public class Track {
             return null;
         }
         return track[yPos / Tile.getTileSize()][xPos / Tile.getTileSize()];
-    }
-
-    // Not used
-    public Tile.Surface getCurrentSurface(Tile tile) {
-        return tile.getSurface();
-    }
-
-    // Not used
-    /**
-     * This function checks to see if a Tile in the track is a slow Time, Grass
-     *
-     * @param row the x position of the tile
-     * @param col the y position of the tile
-     * @return true if the tile is a slow tile, false otherwise
-     */
-//    public boolean isSlowTime(int row, int col) {
-//        return track[row][col].isSlowTile();
-//    }
-
-
-    // Not used
-    public Tile[][] getTrack() {
-        return track;
     }
 
     /**
@@ -180,7 +166,7 @@ public class Track {
      *
      * @param row the row of the Tile in the track data structure
      * @param col the column of the Tile in the track data structure
-     * @param c the character we are changing the Tile to, Make a new tile and inserting it where we want
+     * @param c   the character we are changing the Tile to, Make a new tile and inserting it where we want
      */
     public void changeTile(int row, int col, char c) {
         switch (c) {
@@ -211,8 +197,8 @@ public class Track {
     /**
      * References CheckPointGroups method of changing all of the connected checkPoint tiles when a checkPoint is hit
      *
-     *  @param xPos column of hit checkpoint
-     *  @param yPos row of hit checkpoint
+     * @param xPos column of hit checkpoint
+     * @param yPos row of hit checkpoint
      */
     public void hitCheckpointGroup(int xPos, int yPos) {
         checkPointGroups.changeGroupColor(xPos, yPos);
