@@ -173,9 +173,16 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     private JLabel lapLabel;
     private JLabel modeLabel;
 
+    private JLabel timerLabel2;
+    private JLabel lapLabel2;
+
     private final double ACCELL_AMOUNT = 0.067;
 
     private final double TURN_AMOUNT = 0.0167;
+
+    private boolean gamePaused = false;
+
+    private JPanel pauseOverlay;
 
 
     /**
@@ -509,6 +516,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             cars[0].resetCheckpointCount();
             if (cars[0].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 player1Finished = true;
+                cars[0].stopTimer();
                 if(player2Finished) { endTwoPlayer(); };
             }
         }
@@ -534,6 +542,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             cars[1].resetCheckpointCount();
             if (cars[1].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 player2Finished = true;
+                cars[1].stopTimer();
                 if(player1Finished) { endTwoPlayer(); }
             }
         }
@@ -543,6 +552,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
 
     private void endTwoPlayer() {
         gameRunning = false;
+        player1Finished = false;
+        player2Finished = false;
         String winner;
         if (cars[0].getRaceTime() < cars[1].getRaceTime()) {
             winner = "Player 1 wins!";
@@ -658,11 +669,15 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      */
     public void run() {
 
-        if (!gameRunning) return;
+        if (!gameRunning || gamePaused) return;
         // Update
         if (timerLabel != null) {
-            timerLabel.setText("Time: " + cars[0].getCurrentTime());
+            timerLabel.setText("Time: " +  cars[0].getCurrentTime());
             lapLabel.setText("Lap: " + cars[0].getLap() + "/" + MAX_LAPS);
+        }
+        if (timerLabel2 != null && cars.length > 1) {
+            timerLabel2.setText("Time: " + cars[1].getCurrentTime());
+            lapLabel2.setText("Lap: " + cars[1].getLap() + "/" + MAX_LAPS);
         }
 
         // ---------- PLAYER 1 ----------
@@ -677,15 +692,13 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         surface1 = carTile1.getSurface();
 
         // Time trial logic (only for single player)
-        if (cars.length == 1) {
-            timeTrial(surface1);
-        }
+        if (cars.length == 1) { timeTrial(surface1); }
 
         cars[0].setGrip(surface1.grip);
         cars[0].setAccelerationMultiplier(surface1.accelMultiplier);
         cars[0].setMaxSpeed(surface1.maxSpeed);
 
-        cars[0].move();
+        if (cars.length == 1) { cars[0].move(); }
 
         // ---------- PLAYER 2 ----------
         if (cars.length > 1) {
@@ -705,6 +718,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             cars[1].setMaxSpeed(surface2.maxSpeed);
             twoPlayer(surface1, surface2);
 
+            cars[0].move();
             cars[1].move();
         }
 
@@ -723,8 +737,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-
-            // Player 1
+// Player 1
             case KeyEvent.VK_W -> {
                 if (!gameRunning && startGame) {
                     startCountdown();
@@ -744,12 +757,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             case KeyEvent.VK_RIGHT -> right2 = true;
 
             case KeyEvent.VK_SPACE -> {
-                if (cars.length > 1) { drift2 = true; }  // 2P: player 2 drift
-                else { drift = true; }                    // 1P: player 1 drift
+                if (cars.length > 1) drift2 = true;
             }
-            case KeyEvent.VK_SHIFT -> {
-                if (cars.length > 1) drift = true;        // 2P: player 1 drift only
-            }
+            case KeyEvent.VK_SHIFT -> drift = true;  // P1 drift in both modes
         }
     }
 
@@ -779,12 +789,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             case KeyEvent.VK_RIGHT -> right2 = false;
 
             case KeyEvent.VK_SPACE -> {
-                if (cars.length > 1) { drift2 = false; }
-                else { drift = false; }
+                if (cars.length > 1) drift2 = false;
             }
-            case KeyEvent.VK_SHIFT -> {
-                if (cars.length > 1) drift = false;
-            }
+            case KeyEvent.VK_SHIFT -> drift = false;  // always release, no condition
         }
     }
 
@@ -954,22 +961,153 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         infoPanel.setPreferredSize(new Dimension(200, 0));
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(Color.DARK_GRAY);
-        infoPanel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        infoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        timerLabel = new JLabel("Time: 0");
-        lapLabel = new JLabel("Lap: 0/" + MAX_LAPS);
         modeLabel = new JLabel("Mode: " + currentGamemodeButton.getText());
-
-        timerLabel.setForeground(Color.WHITE);
-        lapLabel.setForeground(Color.WHITE);
         modeLabel.setForeground(Color.WHITE);
-
-        infoPanel.add(timerLabel);
-        infoPanel.add(Box.createVerticalStrut(10));
-        infoPanel.add(lapLabel);
-        infoPanel.add(Box.createVerticalStrut(10));
+        modeLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         infoPanel.add(modeLabel);
+        infoPanel.add(Box.createVerticalStrut(20));
+
+        // Player 1 section
+        JLabel p1Header = new JLabel("-- Player 1 --");
+        p1Header.setForeground(Color.RED);
+        p1Header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        timerLabel = new JLabel("Time: 0.0");
+        timerLabel.setForeground(Color.WHITE);
+        timerLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        lapLabel = new JLabel("Lap: 0/" + MAX_LAPS);
+        lapLabel.setForeground(Color.WHITE);
+        lapLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        infoPanel.add(p1Header);
+        infoPanel.add(Box.createVerticalStrut(5));
+        infoPanel.add(timerLabel);
+        infoPanel.add(Box.createVerticalStrut(5));
+        infoPanel.add(lapLabel);
+
+        // Player 2 section (only in two player mode)
+        if (cars.length > 1) {
+            infoPanel.add(Box.createVerticalStrut(20));
+
+            JLabel p2Header = new JLabel("-- Player 2 --");
+            p2Header.setForeground(new Color(150, 0, 255));
+            p2Header.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            timerLabel2 = new JLabel("Time: 0.0");
+            timerLabel2.setForeground(Color.WHITE);
+            timerLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            lapLabel2 = new JLabel("Lap: 0/" + MAX_LAPS);
+            lapLabel2.setForeground(Color.WHITE);
+            lapLabel2.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            infoPanel.add(p2Header);
+            infoPanel.add(Box.createVerticalStrut(5));
+            infoPanel.add(timerLabel2);
+            infoPanel.add(Box.createVerticalStrut(5));
+            infoPanel.add(lapLabel2);
+        }
+
+        infoPanel.add(Box.createVerticalGlue()); // pushes pause button to bottom
+
+        // Pause button
+        JButton pauseButton = new JButton("Pause");
+        pauseButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pauseButton.setMaximumSize(new Dimension(160, 30));
+        pauseButton.addActionListener(e -> togglePause());
+        infoPanel.add(pauseButton);
 
         contentPane.add(infoPanel, BorderLayout.EAST);
+    }
+
+
+    private void togglePause() {
+        if (!gamePaused) {
+            gamePaused = true;
+            gameRunning = false;
+            showPauseMenu();
+        } else {
+            hidePauseMenu();
+            gamePaused = false;
+            gameRunning = true;
+            trackPanel.requestFocusInWindow();
+        }
+    }
+
+    private void showPauseMenu() {
+        pauseOverlay = new JPanel();
+        pauseOverlay.setLayout(new BoxLayout(pauseOverlay, BoxLayout.Y_AXIS));
+        pauseOverlay.setBackground(Color.DARK_GRAY);
+        pauseOverlay.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JLabel pauseLabel = new JLabel("PAUSED");
+        pauseLabel.setForeground(Color.WHITE);
+        pauseLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton resumeButton = new JButton("Resume");
+        JButton restartButton = new JButton("Restart");
+        JButton menuButton2 = new JButton("Go to Menu");
+        JButton quitButton = new JButton("Quit Game");
+
+        for (JButton btn : new JButton[]{resumeButton, restartButton, menuButton2, quitButton}) {
+            btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btn.setMaximumSize(new Dimension(160, 30));
+        }
+
+        resumeButton.addActionListener(e -> togglePause());
+
+        restartButton.addActionListener(e -> {
+            hidePauseMenu();
+            gamePaused = false;
+            gameRunning = false;
+            gameTimer.cancel();
+            contentPane.removeAll();
+            contentPane.revalidate();
+            contentPane.repaint();
+            actionPerformed(new ActionEvent(playButton, ActionEvent.ACTION_PERFORMED, ""));
+        });
+
+        menuButton2.addActionListener(e -> {
+            hidePauseMenu();
+            gamePaused = false;
+            gameRunning = false;
+            gameTimer.cancel();
+            contentPane.removeAll();
+            contentPane.revalidate();
+            contentPane.repaint();
+            menuScreen();
+        });
+
+        quitButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "Thank you for playing PixelDrift!");
+            System.exit(0);
+        });
+
+        pauseOverlay.add(pauseLabel);
+        pauseOverlay.add(Box.createVerticalStrut(15));
+        pauseOverlay.add(resumeButton);
+        pauseOverlay.add(Box.createVerticalStrut(5));
+        pauseOverlay.add(restartButton);
+        pauseOverlay.add(Box.createVerticalStrut(5));
+        pauseOverlay.add(menuButton2);
+        pauseOverlay.add(Box.createVerticalStrut(5));
+        pauseOverlay.add(quitButton);
+
+        infoPanel.add(Box.createVerticalStrut(10));
+        infoPanel.add(pauseOverlay);
+        infoPanel.revalidate();
+        infoPanel.repaint();
+    }
+
+    private void hidePauseMenu() {
+        if (pauseOverlay != null) {
+            infoPanel.remove(pauseOverlay);
+            pauseOverlay = null;
+            infoPanel.revalidate();
+            infoPanel.repaint();
+        }
     }
 }
