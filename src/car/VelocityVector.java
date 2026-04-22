@@ -1,18 +1,21 @@
 package car;
+
 /**
- * File name: VelocityVector.java
- *
- * Description:
- * Represents a 2D vector used for movement and physics calculations.
+ * VelocityVector.java
+ * Code Description: Represents a 2D vector used for movement and physics calculations.
  * Stores x and y components and provides basic vector operations
  * such as addition, scaling, magnitude, and limiting speed.
  */
 public class VelocityVector {
 
-    /** X component of the vector. */
+    /**
+     * X component of the vector.
+     */
     private double xComp;
 
-    /** Y component of the vector. */
+    /**
+     * Y component of the vector.
+     */
     private double yComp;
 
     /**
@@ -116,7 +119,7 @@ public class VelocityVector {
      *
      * @param angle new direction in radians
      */
-    public void rotateTo(double angle){
+    public void rotateTo(double angle) {
         double mag = getMagnitude();
         xComp = mag * Math.cos(angle);
         yComp = mag * Math.sin(angle);

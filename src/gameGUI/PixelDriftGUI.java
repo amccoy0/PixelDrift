@@ -6,8 +6,6 @@ import track.Track;
 import track.TrackPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Timer;
@@ -16,172 +14,303 @@ import java.util.TimerTask;
 
 /**
  * PixelDriftGUI.java
- * Author: August McCoy + David Ramshaw
- * Code Descirption: This is the GUI class that will run the Pixel Drift Game
+ * Code Description: This is the GUI class that will run the Pixel Drift Game
  */
 public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener, ItemListener {
 
-    /** Time between game updates in milliseconds. */
+    /**
+     * Time between game updates in milliseconds.
+     */
     public static final int TIME_TO_UPDATE = 10;
 
-    /** Countdown time for the race to start */
+    /**
+     * Countdown time for the race to start
+     */
     private static final int COUNTDOWN = 3;
 
-    /** Number of laps required to finish */
+    /**
+     * Number of laps required to finish
+     */
     private static final int MAX_LAPS = 3;
 
-    /** Main game window. */
+    /**
+     * Main game window.
+     */
     private final JFrame gameJFrame;
 
-    /** JRadioButton array for track difficulty */
+    /**
+     * JRadioButton array for track difficulty
+     */
     private JRadioButton[] trackDifficulty;
 
-    /** JRadioButton array for gamemode */
+    /**
+     * JRadioButton array for gamemode
+     */
     private JRadioButton[] gamemodeSelection;
 
-    /** JRadioButton for time trial gamemode */
+    /**
+     * JRadioButton for time trial gamemode
+     */
     private JRadioButton timeTrialButton;
 
-    /** JRadioButton for two player gamemode */
+    /**
+     * JRadioButton for two player gamemode
+     */
     private JRadioButton twoPlayerButton;
 
-    /** JRadioButton for keep track of the currently selected track button */
+    /**
+     * JRadioButton for keep track of the currently selected track button
+     */
     private JRadioButton currentTrackButton;
 
-    /** JRadioButton for keep track of the currently selected gamemode button */
+    /**
+     * JRadioButton for keep track of the currently selected gamemode button
+     */
     private JRadioButton currentGamemodeButton;
 
-    /** JRadioButton for easy track */
+    /**
+     * JRadioButton for easy track
+     */
     private JRadioButton easyTrackButton;
 
-    /** JRadioButton for medium track */
+    /**
+     * JRadioButton for medium track
+     */
     private JRadioButton mediumTrackButton;
 
-    /** JRadioButton for hard track */
+    /**
+     * JRadioButton for hard track
+     */
     private JRadioButton hardTrackButton;
 
-    /** Button Group for track JRadioButtons */
+    /**
+     * Button Group for track JRadioButtons
+     */
     private ButtonGroup trackButtonGroup;
 
-    /** Button Group for gamemode JRadioButtons */
+    /**
+     * Button Group for gamemode JRadioButtons
+     */
     private ButtonGroup gamemodeButtonGroup;
 
-    /** Boolean for whether player1 and player2 have finished all the laps of the race */
+    /**
+     * Boolean for whether player1 and player2 have finished all the laps of the race
+     */
     private boolean player1Finished, player2Finished;
 
-    /** JPanels for gamemode JRadioButtons */
+    /**
+     * JPanels for gamemode JRadioButtons
+     */
     private JPanel gamemodeButtonPanel;
 
-    /** JPanels for track JRadioButtons */
+    /**
+     * JPanels for track JRadioButtons
+     */
     private JPanel trackButtonPanel;
 
-    /** Play Button for menu to start game, has action listener */
+    /**
+     * Play Button for menu to start game, has action listener
+     */
     private JButton playButton;
 
-    /** This button on the menu will load an information pane of how to play */
+    /**
+     * This button on the menu will load an information pane of how to play
+     */
     private JButton howToPlayButton;
 
-    /** This is the Image Icon for the keybindings to play the game*/
+    /**
+     * This is the Image Icon for the keybindings to play the game
+     */
     private ImageIcon controlsImage;
 
-    /** This is the controls JLabel to put the image icon into */
+    /**
+     * This is the controls JLabel to put the image icon into
+     */
     private JLabel controlsLabel;
 
-    /** This is the Image Icon for the objectives of the game*/
+    /**
+     * This is the Image Icon for the objectives of the game
+     */
     private ImageIcon objectiveImage;
 
-    /** This is the objective JLabel to put the image icon into */
+    /**
+     * This is the objective JLabel to put the image icon into
+     */
     private JLabel objectiveLabel;
 
-    /** This is the JPanel to put the controls and game objective JLbabel into */
+    /**
+     * This is the JPanel to put the controls and game objective JLbabel into
+     */
     private JPanel controlsPanel;
 
-    /** This is the JPanel for all of the Exit, Menu, StartGame, HowToPlay buttons */
+    /**
+     * This is the JPanel for all of the Exit, Menu, StartGame, HowToPlay buttons
+     */
     private JPanel menuButtonPanel;
 
-    /** This button will be on the menu and will quit the game */
+    /**
+     * This button will be on the menu and will quit the game
+     */
     private JButton exitButton;
 
-    /** This button will be on the how to play screen and will load the user back into the menu */
+    /**
+     * This button will be on the how to play screen and will load the user back into the menu
+     */
     private JButton menuButton;
 
-    /** Image for starting screen */
+    /**
+     * Image for starting screen
+     */
     private ImageIcon titleImage;
 
-    /** JLabel to add image to for starting screen */
+    /**
+     * JLabel to add image to for starting screen
+     */
     private JLabel titleLabel;
 
-    /** Image that changes based on what gamemode is selected */
+    /**
+     * Image that changes based on what gamemode is selected
+     */
     private ImageIcon menuGamemodeImage;
 
-    /** JLabel to add gamemode image to menu screen */
+    /**
+     * JLabel to add gamemode image to menu screen
+     */
     private JLabel gamemodeImageLabel;
 
-    /** JPanel for the gamemode preview image */
+    /**
+     * JPanel for the gamemode preview image
+     */
     private JPanel gamemodeImagePanel;
 
-    /** Image to get a preview of the track */
+    /**
+     * Image to get a preview of the track
+     */
     private ImageIcon trackImage;
 
-    /** JLabel to add image of track to menu screen */
+    /**
+     * JLabel to add image of track to menu screen
+     */
     private JLabel trackImageLabel;
 
-    /** JPanel for the track preview image */
+    /**
+     * JPanel for the track preview image
+     */
     private JPanel trackImagePanel;
 
-    /** JPanel for the menu */
+    /**
+     * JPanel for the menu
+     */
     private JPanel menuPanel;
 
-    /** Container used for drawing the game. */
+    /**
+     * Container used for drawing the game.
+     */
     private final Container contentPane;
 
-    /** Player 1 controls */
+    /**
+     * Player 1 controls
+     */
     private boolean up, down, left, right, drift;
 
-    /** Player 2 controls */
+    /**
+     * Player 2 controls
+     */
     private boolean up2, down2, left2, right2, drift2;
 
-    /** Timer used to repeatedly update the game. */
+    /**
+     * Timer used to repeatedly update the game.
+     */
     private java.util.Timer gameTimer = new Timer();
 
-    /** The car objects being controlled in the game. */
+    /**
+     * The car objects being controlled in the game.
+     */
     private Car[] cars;
 
-    /** Track the car's location */
+    /**
+     * Track the car's location
+     */
     private Tile carTile1, carTile2;
 
-    /** Track the car's current Tile's surface */
+    /**
+     * Track the car's current Tile's surface
+     */
     private Tile.Surface surface1, surface2;
 
-    /** Used to store track data */
+    /**
+     * Used to store track data
+     */
     private Track track;
 
-    /** Used to draw track and cars */
+    /**
+     * Used to draw track and cars
+     */
     private TrackPanel trackPanel;
 
-    /** Indicates whether the game is currently running. */
+    /**
+     * Indicates whether the game is currently running.
+     */
     private boolean gameRunning;
 
-    /** Used for countdown timer, determines when the user can start the game countdown or not*/
+    /**
+     * Used for countdown timer, determines when the user can start the game countdown or not
+     */
     private boolean startGame;
 
-    /** String array for JOptionPane options when game ends */
+    /**
+     * String array for JOptionPane options when game ends
+     */
     private static final String[] endGameOptions = {"Go to Menu", "Play again"};
 
+    /**
+     * JPanel for infoPanel when racing
+     */
     private JPanel infoPanel;
+
+    /**
+     * JLabel for timer
+     */
     private JLabel timerLabel;
+
+    /**
+     * JLabel for lapCount
+     */
     private JLabel lapLabel;
+
+    /**
+     * JLabel for gamemode
+     */
     private JLabel modeLabel;
 
+    /**
+     * JLabel for player 2 time
+     */
     private JLabel timerLabel2;
+
+    /**
+     * JLabel for player 2 lap
+     */
     private JLabel lapLabel2;
 
+    /**
+     * Constant for acceleration amount
+     */
     private final double ACCELL_AMOUNT = 0.067;
 
+    /**
+     * Constant for turn amount
+     */
     private final double TURN_AMOUNT = 0.0167;
 
+    /**
+     * Boolean is game paused
+     */
     private boolean gamePaused = false;
 
+    /**
+     * JPanel for pause overlay
+     */
     private JPanel pauseOverlay;
 
     private int startX;
@@ -202,7 +331,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     /**
      * Constructor
      */
-    public PixelDriftGUI () {
+    public PixelDriftGUI() {
         gameJFrame = new JFrame("Pixel Drift");
         gameJFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -287,12 +416,12 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         gamemodeImageLabel = new JLabel(menuGamemodeImage);
         gamemodeImagePanel.add(gamemodeImageLabel, BorderLayout.CENTER);
 
-        for (JRadioButton button: gamemodeSelection) {
+        for (JRadioButton button : gamemodeSelection) {
             gamemodeButtonGroup.add(button);
         }
 
         // Add track buttons to respected panel
-        for (JRadioButton button: gamemodeSelection) {
+        for (JRadioButton button : gamemodeSelection) {
             gamemodeButtonPanel.add(button);
         }
 
@@ -325,12 +454,12 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         trackImageLabel = new JLabel(trackImage);
         trackImagePanel.add(trackImageLabel, BorderLayout.CENTER);
 
-        for (JRadioButton button: trackDifficulty) {
+        for (JRadioButton button : trackDifficulty) {
             trackButtonGroup.add(button);
         }
 
         // Add gamemode buttons to respected panel
-        for (JRadioButton button: trackDifficulty) {
+        for (JRadioButton button : trackDifficulty) {
             trackButtonPanel.add(button);
         }
 
@@ -358,17 +487,20 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         menuPanel = new JPanel();
         menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
 
+        // Set panel alignment
         gamemodeButtonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         gamemodeImagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         trackButtonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         trackImagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Add panels
         menuPanel.add(gamemodeButtonPanel);
         menuPanel.add(gamemodeImagePanel);
         menuPanel.add(trackButtonPanel);
         menuPanel.add(trackImagePanel);
 
-        menuButtonPanel = new JPanel(new GridLayout(1,3));
+        // Create button panel
+        menuButtonPanel = new JPanel(new GridLayout(1, 3));
         menuButtonPanel.add(exitButton);
         menuButtonPanel.add(howToPlayButton);
         menuButtonPanel.add(playButton);
@@ -434,23 +566,23 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             cars[0].setCheckpointCooldown(false);
             track.hitCheckpointGroup(carTile1.getXPos(), carTile1.getYPos());
             checkpointTick(cars[0]);
-        // Check if current tile is wall
-        } else if  (surface == Tile.Surface.WALL || surface == Tile.Surface.BARRIER) {
+            // Check if current tile is wall
+        } else if (surface == Tile.Surface.WALL || surface == Tile.Surface.BARRIER) {
             cars[0].hitWall();
             // Check if current tile is finish
         } else if (surface == Tile.Surface.FINISH && cars[0].getCheckPointCount() >= track.getNumCheckpoints()) {
             cars[0].incrementLap();
             track.resetCheckpoints();
             // Check if car has reached max lap count and stop game
-            if (cars[0].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
+            if (cars[0].getLap() - 1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 // Stop timer and game
                 gameRunning = false;
                 gameTimer.cancel();
                 cars[0].stopTimer();
 
                 // Display in message and ask if they want to go to the menu or play again
-                JOptionPane.showMessageDialog(null, "You finished the track in: " + cars[0].getRaceTime() + " seconds!" );
-                int selection = JOptionPane.showOptionDialog(null,"Would you like to play again or go to the menu?",
+                JOptionPane.showMessageDialog(null, "You finished the track in: " + cars[0].getRaceTime() + " seconds!");
+                int selection = JOptionPane.showOptionDialog(null, "Would you like to play again or go to the menu?",
                         "End of Race", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, endGameOptions, endGameOptions[0]);
                 // Return to menu or call play again
                 if (selection == 1) {
@@ -483,8 +615,10 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         trackPanel = new TrackPanel(track, 1);
         trackPanel.setFocusable(true);
         cars = new Car[1];
+
         cars[0] = new Car(startX, startY, "RedCar.png");
         cars[0].reset(startX,startY);
+        
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -494,7 +628,6 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         gameJFrame.pack();
         gameJFrame.revalidate();
         trackPanel.requestFocusInWindow();
-
 
 
         // Set title in here
@@ -528,10 +661,13 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
 
             cars[0].incrementLap();
             cars[0].resetCheckpointCount();
-            if (cars[0].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
+            if (cars[0].getLap() - 1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 player1Finished = true;
                 cars[0].stopTimer();
-                if(player2Finished) { endTwoPlayer(); };
+                if (player2Finished) {
+                    endTwoPlayer();
+                }
+                ;
             }
         }
 
@@ -554,16 +690,21 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
 
             cars[1].incrementLap();
             cars[1].resetCheckpointCount();
-            if (cars[1].getLap()-1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
+            if (cars[1].getLap() - 1 >= MAX_LAPS) { // -1 because we increment right at the beginning, so getLap represent the lap the car's on, not completed laps
                 player2Finished = true;
                 cars[1].stopTimer();
-                if(player1Finished) { endTwoPlayer(); }
+                if (player1Finished) {
+                    endTwoPlayer();
+                }
             }
         }
 
 
     }
 
+    /**
+     * End of two player method, determines pathing to menu or play again
+     */
     private void endTwoPlayer() {
         gameRunning = false;
         player1Finished = false;
@@ -611,13 +752,13 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 countdown[0]--;
             } else {
                 // Stop timer and start game
-                ((javax.swing.Timer)e.getSource()).stop();
+                ((javax.swing.Timer) e.getSource()).stop();
                 gameRunning = true;
                 // Start car timers
-                for (Car car : cars){
+                for (Car car : cars) {
                     car.startTimer();
                     // This is so the lap increments at the start
-                    for ( int i = 0; i < track.getNumCheckpoints(); i++) {
+                    for (int i = 0; i < track.getNumCheckpoints(); i++) {
                         car.incrementCheckpointCount();
                     }
                 }
@@ -653,7 +794,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         timer.addActionListener(e -> {
             // True means its over and can cross the checkpoint
             car.setCheckpointCooldown(true);
-            ((javax.swing.Timer)e.getSource()).stop();
+            ((javax.swing.Timer) e.getSource()).stop();
         });
         timer.setRepeats(false);
         timer.start();
@@ -670,7 +811,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         javax.swing.Timer timer = new javax.swing.Timer(500, null);
         timer.addActionListener(e -> {
             track.resetSpecificCheckpoint(groupNum);
-            ((javax.swing.Timer)e.getSource()).stop();
+            ((javax.swing.Timer) e.getSource()).stop();
         });
         timer.setRepeats(false);
         timer.start();
@@ -686,7 +827,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         if (!gameRunning || gamePaused) return;
         // Update
         if (timerLabel != null) {
-            timerLabel.setText("Time: " +  cars[0].getCurrentTime());
+            timerLabel.setText("Time: " + cars[0].getCurrentTime());
             lapLabel.setText("Lap: " + cars[0].getLap() + "/" + MAX_LAPS);
         }
         if (timerLabel2 != null && cars.length > 1) {
@@ -706,13 +847,17 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         surface1 = carTile1.getSurface();
 
         // Time trial logic (only for single player)
-        if (cars.length == 1) { timeTrial(surface1); }
+        if (cars.length == 1) {
+            timeTrial(surface1);
+        }
 
         cars[0].setGrip(surface1.grip);
         cars[0].setAccelerationMultiplier(surface1.accelMultiplier);
         cars[0].setMaxSpeed(surface1.maxSpeed);
 
-        if (cars.length == 1) { cars[0].move(); }
+        if (cars.length == 1) {
+            cars[0].move();
+        }
 
         // ---------- PLAYER 2 ----------
         if (cars.length > 1) {
@@ -751,11 +896,11 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-// Player 1
+            // Player 1
             case KeyEvent.VK_W -> {
                 if (!gameRunning && startGame) {
                     startCountdown();
-                } else if (gameRunning){
+                } else if (gameRunning) {
                     up = true;
                 }
             }
@@ -777,8 +922,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         }
     }
 
-    private Tile carPosToTile(int[] carPos){
-        return track.getCurrentTile(carPos[0],carPos[1]);
+    private Tile carPosToTile(int[] carPos) {
+        return track.getCurrentTile(carPos[0], carPos[1]);
     }
 
     /**
@@ -815,7 +960,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     /**
      * Required method, not implemented
@@ -823,7 +969,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     /**
      * Required method, not implemented
@@ -831,7 +978,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
 
     /**
      * Required method, not implemented
@@ -839,7 +987,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
     /**
      * Required method, not implemented
@@ -847,7 +996,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void mouseEntered(MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     /**
      * Required method, not implemented
@@ -855,7 +1005,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
      * @param e key event
      */
     @Override
-    public void mouseExited(MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     /**
      * This method is only called when a JRadioButton is selected. It reassigns the respective selected button for each
@@ -868,7 +1019,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         // Check if one of the buttons is selected
         if (e.getStateChange() == ItemEvent.SELECTED) {
             // Check if source is track or gamemode
-            for (JRadioButton gamemodeButton: gamemodeSelection) {
+            for (JRadioButton gamemodeButton : gamemodeSelection) {
                 if (e.getSource() == gamemodeButton) {
                     currentGamemodeButton = gamemodeButton;
 
@@ -882,9 +1033,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                     gamemodeImagePanel.repaint();
                 }
             }
-            for (JRadioButton trackButton: trackDifficulty) {
+            for (JRadioButton trackButton : trackDifficulty) {
                 if (e.getSource() == trackButton) {
-                    currentTrackButton =  trackButton;
+                    currentTrackButton = trackButton;
 
                     // Swap track image
                     if (currentTrackButton == easyTrackButton) {
@@ -931,6 +1082,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 track = new Track("src/data/hardTrack.txt", 4);
                 startX = hStartX;
                 startY = hStartY;
+
             }
 
             // Game mode
@@ -941,10 +1093,12 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 trackPanel = new TrackPanel(track, 2);
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
+
                 cars[0] = new Car(startX, startY, "RedCar.png");
                 cars[0].reset(startX, startY);
                 cars[1] = new Car(startX, startY-50, "PurpleCar.png");
                 cars[1].reset(startX, startY-50);
+
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
@@ -1043,7 +1197,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         contentPane.add(infoPanel, BorderLayout.EAST);
     }
 
-
+    /**
+     * Method to toggle pause
+     */
     private void togglePause() {
         if (!gamePaused) {
             gamePaused = true;
@@ -1057,6 +1213,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         }
     }
 
+    /**
+     * Method to show pause menu when game is paused
+     */
     private void showPauseMenu() {
         pauseOverlay = new JPanel();
         pauseOverlay.setLayout(new BoxLayout(pauseOverlay, BoxLayout.Y_AXIS));
@@ -1122,6 +1281,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         infoPanel.repaint();
     }
 
+    /**
+     * Method to hide the pause menu
+     */
     private void hidePauseMenu() {
         if (pauseOverlay != null) {
             infoPanel.remove(pauseOverlay);

@@ -8,7 +8,6 @@ import java.awt.image.BufferedImage;
 
 /**
  * TrackPanel.java
- * Author: August McCoy
  * Code Description: This class represents the visual Track. It extends JPanel to allow the use of the paint component
  * method which allows us to draw the track. Each Tile in the track is represented by a 8x8 pixel square.
  *
@@ -18,25 +17,35 @@ import java.awt.image.BufferedImage;
  * The buffer is only recreated when the panel is first used or its size changes.
  */
 public class TrackPanel extends JPanel {
-    /** Track that will be assigned to track panel for redrawing */
+    /**
+     * Track that will be assigned to track panel for redrawing
+     */
     private Track track;
 
-    /** Number of cars in the array of cars, not constant for future gamemodes + ability to be changed between gamemodes */
+    /**
+     * Number of cars in the array of cars, not constant for future gamemodes + ability to be changed between gamemodes
+     */
     private final int numCars;
 
-    /** Array of cars for redrawing */
+    /**
+     * Array of cars for redrawing
+     */
     private Car[] cars;
 
-    /** Off-screen buffer - we draw everything here first, then blit it to the panel */
+    /**
+     * Off-screen buffer - we draw everything here first, then blit it to the panel
+     */
     private BufferedImage buffer;
 
-    /** Graphics context for the off-screen buffer */
+    /**
+     * Graphics context for the off-screen buffer
+     */
     private Graphics2D bufferGraphics;
 
     /**
      * Constructor for TrackPanel
      *
-     * @param track the track that the TrackPanel will store and redraw
+     * @param track   the track that the TrackPanel will store and redraw
      * @param numCars the number of cars on the TrackPanel
      */
     public TrackPanel(Track track, int numCars) {

@@ -1,6 +1,7 @@
 package car;
 
 import track.Tile;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -8,66 +9,121 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 /**
- * File name: Car.java
- *
- * Description:
- * Represents a car object in the game.
+ * Car.java
+ * Code Description: Represents a car object in the game.
  * The car has a position, velocity vector, orientation angle,
  * and can optionally display a sprite image.
  */
 public class Car {
 
+    /**
+     * Car's xPos
+     */
     private double xPos;
+
+    /**
+     * Car's yPos
+     */
     private double yPos;
 
-
-    /** Direction the car is facing (in radians). */
+    /**
+     * Direction the car is facing (in radians).
+     */
     private double angle = 0;
+
+    /**
+     * Grip of the Tile the car is on
+     */
     private double grip;
+
+    /**
+     * Acceleration multiplier of the Tile the car is on
+     */
     private double accelerationMultiplier;
-    private double dragConstant = 0.98;
+
+    /**
+     * Drag constant
+     */
+    private static final double dragConstant = 0.98;
+
+    /**
+     * Max speed of the car
+     */
     private double maxSpeed = 6.0;
 
-    /** Vector representing the car's velocity. */
+    /**
+     * Vector representing the car's velocity.
+     */
     private VelocityVector velocity;
 
-    /** File name of the car sprite image. */
+    /**
+     * File name of the car sprite image.
+     */
     private String imgFileName;
 
-    /** Loaded image used to draw the car. */
+    /**
+     * Loaded image used to draw the car.
+     */
     private BufferedImage img;
 
-    /** Indicates whether the car is drifting. */
+    /**
+     * Indicates whether the car is drifting.
+     */
     private boolean drift = false;
 
-    /** The car's personal lapcount, starts at 0 */
+    /**
+     * The car's personal lap count, starts at 0
+     */
     private int lap;
-    /** How many checkpoints the car has crossed in the lap, used to determine whether or not the car can incrememnt lap */
-    private int checkPointCount;
-    /** Used in a timer, true when the car can cross a checkpoint and have it count */
-    private boolean checkpointCooldown;
-    // Used to make sure we don't increment Finish, might need to be a data structure where we just look at the last amount
-    // of Tiles
-    private Tile lastTile;
 
+    /**
+     * How many checkpoints the car has crossed in the lap, used to determine whether or not the car can incrememnt lap
+     */
+    private int checkPointCount;
+
+    /**
+     * Used in a timer, true when the car can cross a checkpoint and have it count
+     */
+    private boolean checkpointCooldown;
+
+    /**
+     * Start time of car for race
+     */
     private double startTime;
+
+    /**
+     * End time of car for race
+     */
     private double endTime;
+
+    /**
+     * Total time car was racing
+     */
     private double raceTime;
 
+    /**
+     * Previous X pos
+     */
     private double prevX;
+
+    /**
+     * Previous Y pos
+     */
     private double prevY;
 
+    /**
+     * Boolean for if car can accelerate
+     */
     private boolean canAccelerate = true;
-
 
     /**
      * Constructs a Car object at the specified position.
      *
-     * @param xPos starting x-coordinate
-     * @param yPos starting y-coordinate
+     * @param xPos        starting x-coordinate
+     * @param yPos        starting y-coordinate
      * @param imgFileName name of the image file used for the car sprite
      */
-    public Car(double xPos, double yPos, String imgFileName){
+    public Car(double xPos, double yPos, String imgFileName) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.velocity = new VelocityVector();
@@ -106,8 +162,8 @@ public class Car {
 
         // here, if the car is not drifting we set the velocity vector to the angle,
         // instead of letting it slowly change
-        if (!drift){
-            velocity.rotateTo(angle*grip);
+        if (!drift) {
+            velocity.rotateTo(angle * grip);
         }
     }
 
@@ -163,17 +219,17 @@ public class Car {
         int width = 15;
         int height = 25;
 
-        int centerX = (int)xPos + width / 2;
-        int centerY = (int)yPos + height / 2;
+        int centerX = (int) xPos + width / 2;
+        int centerY = (int) yPos + height / 2;
 
         AffineTransform original = g2.getTransform();  // save
 
         g2.rotate(angle, centerX, centerY);
 
         if (img == null)
-            g2.fillRect((int)xPos, (int)yPos, width, height);
+            g2.fillRect((int) xPos, (int) yPos, width, height);
         else
-            g2.drawImage(img, (int)xPos, (int)yPos, null);
+            g2.drawImage(img, (int) xPos, (int) yPos, null);
 
         // Restore the original transform so subsequent cars are not drawn with this car's rotation applied
         g2.setTransform(original);
@@ -202,31 +258,10 @@ public class Car {
     }
 
     /**
-     * Returns whether the car is currently drifting.
-     *
-     * @return true if drifting
-     */
-    public boolean isDrift() {
-        return drift;
-    }
-
-
-    /**
      * Applies drag to the car's velocity.
      * This simulates friction and gradually slows the car.
      */
-    private void drag(){
-        velocity.scale(dragConstant);
-    }
-
-
-    /**
-     * Sets the current lap count.
-     *
-     * @param lap lap number
-     */
-    public void setLap(int lap) {
-        this.lap = lap;
+    private void drag() { velocity.scale(dragConstant);
     }
 
     /**
@@ -243,13 +278,6 @@ public class Car {
      */
     public void incrementLap() {
         lap += 1;
-    }
-
-    /**
-     * Resets the lap counter to zero.
-     */
-    public void resetLap() {
-        lap = 0;
     }
 
     /**
@@ -276,30 +304,12 @@ public class Car {
     }
 
     /**
-     * Sets the last tile the car touched.
-     *
-     * @param tile tile object
-     */
-    public void setLastTile(Tile tile) {
-        lastTile = tile;
-    }
-
-    /**
-     * Returns the last tile the car touched.
-     *
-     * @return tile object
-     */
-    public Tile getLastTile() {
-        return lastTile;
-    }
-
-    /**
      * Returns current position of car.
      *
      * @return array containing x and y position
      */
-    public int[] getPos(){
-        return new int[]{(int)xPos,(int)yPos};
+    public int[] getPos() {
+        return new int[]{(int) xPos, (int) yPos};
     }
 
     /**
@@ -307,21 +317,27 @@ public class Car {
      *
      * @param amount grip value
      */
-    public void setGrip(double amount){ grip = amount;}
+    public void setGrip(double amount) {
+        grip = amount;
+    }
 
     /**
      * Sets acceleration multiplier.
      *
      * @param amount acceleration multiplier
      */
-    public void setAccelerationMultiplier(double amount){ accelerationMultiplier = amount;}
+    public void setAccelerationMultiplier(double amount) {
+        accelerationMultiplier = amount;
+    }
 
     /**
      * Sets maximum speed of the car.
      *
      * @param amount max speed
      */
-    public void setMaxSpeed(double amount){ maxSpeed = amount;}
+    public void setMaxSpeed(double amount) {
+        maxSpeed = amount;
+    }
 
     /**
      * Returns checkpoint cooldown state.
@@ -344,17 +360,17 @@ public class Car {
     /**
      * Starts race timer.
      */
-    public void startTimer(){
+    public void startTimer() {
         startTime = System.currentTimeMillis();
     }
 
     /**
      * Stops race timer and records race time.
      */
-    public void stopTimer(){
+    public void stopTimer() {
         endTime = System.currentTimeMillis();
-        raceTime = endTime-startTime;
-        raceTime/=1000;
+        raceTime = endTime - startTime;
+        raceTime /= 1000;
     }
 
     /**
@@ -362,8 +378,8 @@ public class Car {
      *
      * @return time in seconds
      */
-    public double getCurrentTime(){
-        return (System.currentTimeMillis() - startTime)/1000;
+    public double getCurrentTime() {
+        return (System.currentTimeMillis() - startTime) / 1000;
     }
 
     /**
@@ -371,7 +387,7 @@ public class Car {
      *
      * @return race time in seconds
      */
-    public double getRaceTime(){
+    public double getRaceTime() {
         return raceTime;
     }
 
@@ -447,7 +463,6 @@ public class Car {
         this.lap = 0;
         this.checkPointCount = 0;
         this.checkpointCooldown = true;
-        this.lastTile = null;
         this.canAccelerate = true;
         this.prevX = xPos;
         this.prevY = yPos;
