@@ -184,6 +184,20 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
 
     private JPanel pauseOverlay;
 
+    private int startX;
+    private int startY;
+
+
+    private final int bStartX = 300;
+    private final int bStartY = 90;
+
+    private final int iStartX = 300;
+    private final int iStartY = 110;
+
+    private final int hStartX = 160;
+    private final int hStartY = 110;
+
+
 
     /**
      * Constructor
@@ -469,8 +483,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         trackPanel = new TrackPanel(track, 1);
         trackPanel.setFocusable(true);
         cars = new Car[1];
-        cars[0] = new Car(100, 100, "RedCar.png");
-        cars[0].reset(100,100);
+        cars[0] = new Car(startX, startY, "RedCar.png");
+        cars[0].reset(startX,startY);
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -904,13 +918,19 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             // Initialize tracks
             if (currentTrackButton == easyTrackButton) {
                 // Easy track
-                track = new Track("src/data/easyTrack.txt", 2);
+                track = new Track("src/data/easyTrack.txt", 4);
+                startX = bStartX;
+                startY = bStartY;
             } else if (currentTrackButton == mediumTrackButton) {
                 // Medium track
                 track = new Track("src/data/mediumTrack.txt", 4);
+                startX = iStartX;
+                startY = iStartY;
             } else if (currentTrackButton == hardTrackButton) {
                 // Hard Track
-                track = new Track("src/data/hardTrack.txt", 4);;
+                track = new Track("src/data/hardTrack.txt", 4);
+                startX = hStartX;
+                startY = hStartY;
             }
 
             // Game mode
@@ -921,10 +941,10 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
                 trackPanel = new TrackPanel(track, 2);
                 trackPanel.setFocusable(true);
                 cars = new Car[2];
-                cars[0] = new Car(100, 100, "RedCar.png");
-                cars[0].reset(100,100);
-                cars[1] = new Car(100, 50, "PurpleCar.png");
-                cars[1].reset(100,50);
+                cars[0] = new Car(startX, startY, "RedCar.png");
+                cars[0].reset(startX, startY);
+                cars[1] = new Car(startX, startY-50, "PurpleCar.png");
+                cars[1].reset(startX, startY-50);
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);
 
