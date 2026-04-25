@@ -718,8 +718,9 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             winner = "It's a tie!";
         }
         JOptionPane.showMessageDialog(null, winner + "\nP1: " + cars[0].getRaceTime() + "s  P2: " + cars[1].getRaceTime() + "s");
-        int selection = JOptionPane.showConfirmDialog(null, "Play again?", "Play Again?", JOptionPane.YES_NO_OPTION);
-        if (selection == JOptionPane.YES_OPTION) {
+        int selection = JOptionPane.showOptionDialog(null, "Would you like to play again or go to the menu?",
+                "End of Race", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, endGameOptions, endGameOptions[0]);
+        if (selection == 1) {
             contentPane.removeAll();
             contentPane.revalidate();
             contentPane.repaint();
