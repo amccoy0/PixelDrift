@@ -261,7 +261,8 @@ public class Car {
      * Applies drag to the car's velocity.
      * This simulates friction and gradually slows the car.
      */
-    private void drag() { velocity.scale(dragConstant);
+    private void drag() {
+        velocity.scale(dragConstant);
     }
 
     /**
