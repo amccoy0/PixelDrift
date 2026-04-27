@@ -4,8 +4,10 @@ package car;
  * CarGameDriver
  * Code Description: A simple test driver for the Car class.
  * Runs a series of manual tests and reports success/failure.
+ *
  */
 public class CarGameDriver {
+    // THIS CLASS WAS WRITTEN BY CHATGPT TO TEST THE CAR CLASS
 
     public static void main(String[] args) {
         boolean allSuccess = true;

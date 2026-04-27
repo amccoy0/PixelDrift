@@ -395,6 +395,8 @@ public class Car {
      * Handles collision with a wall using automatic normal detection.
      */
     public void hitWall() {
+//        THIS METHOD WAS WRITTEN BY CHATGPT. A PROMPT WAS GIVEN WITH THE DESIRED PHYSICS,
+//        THEN THE OUTPUT WAS TWEAKED TO GET IT EXACTLY AS INTENDED.
         canAccelerate = false;
         // move back outside wall
         xPos = prevX;
@@ -426,10 +428,16 @@ public class Car {
     /**
      * Reflects the car velocity using the provided wall normal.
      *
+     * THIS METHOD WAS WRITTEN BY CHATGPT. A PROMPT WAS GIVEN WITH THE DESIRED PHYSICS,
+     * THEN THE OUTPUT WAS TWEAKED TO GET IT EXACTLY AS INTENDED.
+     *
      * @param normalX x component of wall normal
      * @param normalY y component of wall normal
      */
     public void hitWall(double normalX, double normalY) {
+//      THIS METHOD WAS WRITTEN BY CHATGPT. A PROMPT WAS GIVEN WITH THE DESIRED PHYSICS,
+//      THEN THE OUTPUT WAS TWEAKED TO GET IT EXACTLY AS INTENDED.
+
         double length = Math.sqrt(normalX * normalX + normalY * normalY);
         normalX /= length;
         normalY /= length;
