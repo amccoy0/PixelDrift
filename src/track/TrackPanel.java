@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
  * TrackPanel.java
  * Code Description: This class represents the visual Track. It extends JPanel to allow the use of the paint component
  * method which allows us to draw the track. Each Tile in the track is represented by a 8x8 pixel square.
- *
+ * <p>
  * Double buffering, implemented by claude.ai: all drawing is done onto an off-screen BufferedImage first, then the finished
  * frame is stamped onto the panel in a single drawImage() call. This eliminates the flickering /
  * tearing that happens when the track and cars are painted directly to the screen tile-by-tile.

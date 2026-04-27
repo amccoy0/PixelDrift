@@ -29,7 +29,9 @@ public class CarGameDriver {
         }
     }
 
-    /** Car instance being tested */
+    /**
+     * Car instance being tested
+     */
     private final Car car;
 
     /**

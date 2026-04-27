@@ -327,7 +327,6 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
     private final int hStartY = 110;
 
 
-
     /**
      * Constructor
      */
@@ -617,8 +616,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         cars = new Car[1];
 
         cars[0] = new Car(startX, startY, "RedCar.png");
-        cars[0].reset(startX,startY);
-        
+        cars[0].reset(startX, startY);
+
         trackPanel.setCar(cars[0]);
 
         // Add trackPanel to gameJFrame
@@ -721,6 +720,15 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
         int selection = JOptionPane.showOptionDialog(null, "Would you like to play again or go to the menu?",
                 "End of Race", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, endGameOptions, endGameOptions[0]);
         if (selection == 1) {
+            gameRunning = false;
+            startGame = false;
+
+            gameTimer.cancel();
+            gameTimer = new java.util.Timer();
+
+            cars[0].reset(startX, startY);
+            cars[1].reset(startX, startY - 50);
+
             contentPane.removeAll();
             contentPane.revalidate();
             contentPane.repaint();
@@ -1070,7 +1078,7 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
             // Initialize tracks
             if (currentTrackButton == easyTrackButton) {
                 // Easy track
-                track = new Track("src/data/easyTrack.txt", 4);
+                track = new Track("src/data/easyTrack.txt", 3);
                 startX = bStartX;
                 startY = bStartY;
             } else if (currentTrackButton == mediumTrackButton) {
@@ -1097,8 +1105,8 @@ public class PixelDriftGUI implements KeyListener, MouseListener, ActionListener
 
                 cars[0] = new Car(startX, startY, "RedCar.png");
                 cars[0].reset(startX, startY);
-                cars[1] = new Car(startX, startY-50, "PurpleCar.png");
-                cars[1].reset(startX, startY-50);
+                cars[1] = new Car(startX, startY - 50, "PurpleCar.png");
+                cars[1].reset(startX, startY - 50);
 
                 trackPanel.setCar(cars[0]);
                 trackPanel.setCar(cars[1]);

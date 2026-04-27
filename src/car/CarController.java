@@ -16,25 +16,39 @@ import java.util.TimerTask;
  */
 public class CarController extends TimerTask implements KeyListener {
 
-    /** Time between game updates in milliseconds. */
+    /**
+     * Time between game updates in milliseconds.
+     */
     public static final int TIME_TO_UPDATE = 10;
 
-    /** Main game window. */
+    /**
+     * Main game window.
+     */
     private final JFrame gameJFrame;
 
-    /** Container used for drawing the game. */
+    /**
+     * Container used for drawing the game.
+     */
     private final Container contentPane;
 
-    /** Movement control flags based on key presses. */
+    /**
+     * Movement control flags based on key presses.
+     */
     private boolean up, down, left, right, drift;
 
-    /** Timer used to repeatedly update the game. */
+    /**
+     * Timer used to repeatedly update the game.
+     */
     private final Timer gameTimer = new Timer();
 
-    /** The car object being controlled in the game. */
+    /**
+     * The car object being controlled in the game.
+     */
     private final Car car;
 
-    /** Indicates whether the game is currently running. */
+    /**
+     * Indicates whether the game is currently running.
+     */
     private boolean gameRunning = false;
 
 
@@ -51,10 +65,10 @@ public class CarController extends TimerTask implements KeyListener {
     /**
      * Constructs the game window and initializes the car and game loop.
      *
-     * @param title window title
-     * @param x window x-position on screen
-     * @param y window y-position on screen
-     * @param width window width
+     * @param title  window title
+     * @param x      window x-position on screen
+     * @param y      window y-position on screen
+     * @param width  window width
      * @param height window height
      */
     public CarController(String title, int x, int y, int width, int height) {
@@ -149,5 +163,6 @@ public class CarController extends TimerTask implements KeyListener {
      * @param e key event
      */
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 }
